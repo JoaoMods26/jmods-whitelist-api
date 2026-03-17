@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         process.env.SUPABASE_KEY
     )
 
-    -- Buscar en global primero, luego en el script específico
     const { data, error } = await supabase
         .from('whitelist')
         .select('*')
