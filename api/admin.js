@@ -1,0 +1,82 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+export default async function handler(req, res) {
+
+    -- Verificar contraseña del panel
+    const authHeader = req.headers['x-admin-password']
+    if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD) {
+        return res.status(403).json({ error: "No autorizado" })
+    }
+
+    const supabase = createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_KEY
+    )
+
+    -- GET: obtener lista completa
+    if (req.method === "GET") {
+        const { data, error } = await supabase
+            .from('whitelist')
+            .select('*')
+            .order('created_at', { ascending: false })
+
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ users: data })
+    }
+
+    -- POST: agregar usuario
+    if (req.method === "POST") {
+        const { username, user_id, hwid, script_name, expires } = req.body
+
+        if (!username || !user_id || !hwid) {
+            return res.status(400).json({ error: "Faltan datos" })
+        }
+
+        const { data, error } = await supabase
+            .from('whitelist')
+            .insert([{
+                username,
+                user_id: parseInt(user_id),
+                hwid,
+                script_name: script_name || 'global',
+                banned: false,
+                expires: expires || 0
+            }])
+            .select()
+
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true, user: data[0] })
+    }
+
+    -- PATCH: banear/desbanear o editar
+    if (req.method === "PATCH") {
+        const { id, banned, expires } = req.body
+
+        const updates = {}
+        if (banned !== undefined) updates.banned = banned
+        if (expires !== undefined) updates.expires = expires
+
+        const { error } = await supabase
+            .from('whitelist')
+            .update(updates)
+            .eq('id', id)
+
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true })
+    }
+
+    -- DELETE: borrar usuario
+    if (req.method === "DELETE") {
+        const { id } = req.body
+
+        const { error } = await supabase
+            .from('whitelist')
+            .delete()
+            .eq('id', id)
+
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true })
+    }
+
+    return res.status(405).json({ error: "Metodo no permitido" })
+}
