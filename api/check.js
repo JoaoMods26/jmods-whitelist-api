@@ -46,16 +46,23 @@ export default async function handler(req, res) {
     }
 
     if (!entry.active) {
-        return res.json({ allowed: false, reason: "Acceso desactivado temporalmente" })
+        return res.json({ allowed: false, reason: "Acceso desactivado" })
     }
 
+    // Auto-pausa al expirar
     if (entry.expires !== 0 && Date.now() / 1000 > entry.expires) {
-        return res.json({ allowed: false, reason: "Acceso expirado" })
+        // Pausar automáticamente en la base de datos
+        await supabase
+            .from('whitelist')
+            .update({ active: false })
+            .eq('id', entry.id)
+
+        return res.json({ allowed: false, reason: "Acceso expirado — membresía pausada automáticamente" })
     }
 
-    // Verificar PlaceId — 0 significa todos los juegos
+    // Verificar PlaceId
     if (entry.place_id !== 0 && placeId && entry.place_id !== parseInt(placeId)) {
-        return res.json({ allowed: false, reason: "Este acceso no es valido para este juego" })
+        return res.json({ allowed: false, reason: "Acceso no valido para este juego" })
     }
 
     return res.json({ allowed: true, accessType: entry.script_name })
