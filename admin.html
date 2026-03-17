@@ -32,14 +32,15 @@
   .btn-danger  { background: #2a0a0a; color: #f07070; border-color: #5a1a1a; }
   .btn-neutral { background: #1a1a2a; color: #9090d0; border-color: #2a2a5a; }
   .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .btn-copy { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; padding: 2px 7px; font-size: 11px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+  .btn-copy:hover { background: #222; color: #aaa; border-color: #444; }
+  .btn-copy.copied { background: #0a2a1a; color: #40c070; border-color: #1a5a30; }
 
-  /* Dropdown de duración */
   .duration-dropdown { position: relative; margin-bottom: 8px; }
   .duration-trigger {
     width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
     padding: 8px 12px; font-size: 13px; color: #e0e0e0; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-    user-select: none;
+    display: flex; justify-content: space-between; align-items: center; user-select: none;
   }
   .duration-trigger:hover { border-color: #444; }
   .duration-trigger.open { border-color: #444; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
@@ -55,21 +56,12 @@
   .preset-group { margin-bottom: 10px; }
   .preset-group-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
   .preset-row { display: flex; flex-wrap: wrap; gap: 5px; }
-  .btn-preset {
-    background: #222; color: #aaa; border: 1px solid #333;
-    padding: 4px 10px; font-size: 12px; border-radius: 6px;
-    cursor: pointer; white-space: nowrap;
-  }
+  .btn-preset { background: #222; color: #aaa; border: 1px solid #333; padding: 4px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
   .btn-preset:hover { background: #2a2a2a; border-color: #555; color: #e0e0e0; }
   .btn-preset.selected { background: #1a3a5c; color: #7eb8f7; border-color: #2a5a8c; }
   .custom-date-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2a2a; display: none; }
   .custom-date-wrap label { font-size: 11px; color: #666; display: block; margin-bottom: 4px; }
-
-  .expires-preview {
-    font-size: 12px; color: #666; margin-bottom: 12px;
-    padding: 6px 10px; background: #0f0f0f; border-radius: 6px;
-    min-height: 30px; display: flex; align-items: center;
-  }
+  .expires-preview { font-size: 12px; color: #666; margin-bottom: 12px; padding: 6px 10px; background: #0f0f0f; border-radius: 6px; min-height: 30px; display: flex; align-items: center; }
   .hint { font-size: 11px; color: #555; margin-top: 4px; }
   .section-divider { border: none; border-top: 1px solid #1a1a1a; margin: 12px 0; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -93,9 +85,9 @@
   .table-wrap { overflow-x: auto; }
   .search-bar { display: flex; gap: 8px; margin-bottom: 1rem; }
   .search-bar input { flex: 1; }
-  .expires-soon  { color: #f0a030; }
-  .expires-never { color: #555; }
-  .expires-ok    { color: #666; }
+  .hwid-cell { display: flex; align-items: center; gap: 6px; }
+  .hwid-text { font-size: 11px; color: #444; font-family: monospace; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: default; }
+  .hwid-text:hover { color: #666; }
 </style>
 </head>
 <body>
@@ -131,7 +123,6 @@
 
   <div class="card">
     <div class="card-title">Agregar usuario</div>
-
     <div class="form-grid">
       <input id="new-username" placeholder="Username de Roblox" />
       <input id="new-userid" placeholder="UserId (número)" type="number" />
@@ -160,7 +151,6 @@
 
     <hr class="section-divider">
 
-    <!-- DROPDOWN DE DURACIÓN -->
     <div class="form-full">
       <p class="hint" style="margin-bottom:6px;">Duración del acceso</p>
       <div class="duration-dropdown">
@@ -173,6 +163,8 @@
           <div class="preset-group">
             <div class="preset-group-label">Minutos</div>
             <div class="preset-row">
+              <button class="btn-preset" onclick="selectPreset(this,'3m',3*60)">3 min</button>
+              <button class="btn-preset" onclick="selectPreset(this,'5m',5*60)">5 min</button>
               <button class="btn-preset" onclick="selectPreset(this,'15m',15*60)">15 min</button>
               <button class="btn-preset" onclick="selectPreset(this,'30m',30*60)">30 min</button>
               <button class="btn-preset" onclick="selectPreset(this,'45m',45*60)">45 min</button>
@@ -232,13 +224,11 @@
             <label>Selecciona la fecha exacta:</label>
             <input id="new-expires" type="date" />
           </div>
-
         </div>
       </div>
     </div>
 
     <div class="expires-preview" id="expires-preview">♾️ Sin fecha de expiración — acceso permanente</div>
-
     <button class="btn btn-primary" onclick="addUser()" style="width:100%;">+ Agregar usuario</button>
     <div id="add-msg" style="display:none;"></div>
   </div>
@@ -264,9 +254,8 @@
 <script>
 let adminPassword = ''
 let users = []
-let selectedSeconds = 0  // 0 = permanente, -1 = fecha exacta, >0 = segundos desde ahora
+let selectedSeconds = 0
 
-// ── DROPDOWN ─────────────────────────────────────
 function toggleDurationPanel() {
     const trigger = document.getElementById('duration-trigger')
     const panel   = document.getElementById('duration-panel')
@@ -274,7 +263,6 @@ function toggleDurationPanel() {
     panel.classList.toggle('open')
 }
 
-// Cerrar dropdown al hacer click fuera
 document.addEventListener('click', function(e) {
     const dd = document.querySelector('.duration-dropdown')
     if (dd && !dd.contains(e.target)) {
@@ -316,7 +304,6 @@ function selectPreset(btn, key, seconds) {
         }
     }
 
-    // Cerrar dropdown
     document.getElementById('duration-trigger').classList.remove('open')
     document.getElementById('duration-panel').classList.remove('open')
 }
@@ -331,7 +318,6 @@ function getExpiresTimestamp() {
     return Math.floor(Date.now() / 1000) + selectedSeconds
 }
 
-// ── AUTH ─────────────────────────────────────────
 async function login() {
     const pw = document.getElementById('password-input').value.trim()
     if (!pw) return
@@ -359,12 +345,9 @@ document.getElementById('password-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') login()
 })
 
-// ── FETCH ─────────────────────────────────────────
 async function fetchUsers() {
     try {
-        const res = await fetch('/api/admin', {
-            headers: { 'x-admin-password': adminPassword }
-        })
+        const res = await fetch('/api/admin', { headers: { 'x-admin-password': adminPassword } })
         if (res.status === 403) return false
         const data = await res.json()
         users = data.users || []
@@ -374,7 +357,6 @@ async function fetchUsers() {
     } catch { return false }
 }
 
-// ── STATS ─────────────────────────────────────────
 function updateStats() {
     const now = Date.now() / 1000
     const banned  = users.filter(u => u.banned).length
@@ -395,26 +377,23 @@ function getStatus(u) {
 }
 
 function formatExpires(ts) {
-    if (!ts || ts === 0) return '<span class="expires-never">♾️ Permanente</span>'
-    const now = Date.now() / 1000
-    const date = new Date(ts * 1000)
+    if (!ts || ts === 0) return '<span style="color:#555;font-size:12px;">♾️ Permanente</span>'
+    const now  = Date.now() / 1000
     const diff = ts - now
+    const date = new Date(ts * 1000)
 
     if (now > ts) {
-        return `<span class="expires-soon">⚠️ Expiró</span><br><span style="font-size:11px;color:#555">${date.toLocaleString('es')}</span>`
+        return `<span style="color:#f07070;font-size:12px;">⚠️ Expiró</span><br><span style="font-size:11px;color:#555">${date.toLocaleString('es')}</span>`
     }
 
     let timeLeft = ''
-    if (diff < 3600) {
-        timeLeft = Math.ceil(diff / 60) + ' min'
-    } else if (diff < 86400) {
-        timeLeft = (diff / 3600).toFixed(1) + 'h'
-    } else {
-        timeLeft = Math.ceil(diff / 86400) + 'd'
-    }
+    if (diff < 60)        timeLeft = Math.ceil(diff) + 's'
+    else if (diff < 3600) timeLeft = Math.ceil(diff / 60) + ' min'
+    else if (diff < 86400) timeLeft = (diff / 3600).toFixed(1) + 'h'
+    else                  timeLeft = Math.ceil(diff / 86400) + 'd'
 
-    const color = diff < 86400 ? '#f0a030' : diff < 3 * 86400 ? '#f0a030' : '#666'
-    return `<span style="color:${color};font-size:12px;">${timeLeft}</span><br><span style="font-size:11px;color:#444">${date.toLocaleString('es')}</span>`
+    const color = diff < 3600 ? '#f07070' : diff < 86400 ? '#f0a030' : '#666'
+    return `<span style="color:${color};font-size:12px;font-weight:500;">${timeLeft}</span><br><span style="font-size:11px;color:#444">${date.toLocaleString('es')}</span>`
 }
 
 function formatPlaceId(pid) {
@@ -422,7 +401,30 @@ function formatPlaceId(pid) {
     return `<a href="https://www.roblox.com/games/${pid}" target="_blank" style="color:#7eb8f7;text-decoration:none;font-size:12px;">${pid}</a>`
 }
 
-// ── FILTRO ────────────────────────────────────────
+function copyHWID(hwid, btnEl) {
+    navigator.clipboard.writeText(hwid).then(() => {
+        btnEl.textContent = '✓ Copiado'
+        btnEl.classList.add('copied')
+        setTimeout(() => {
+            btnEl.textContent = 'Copiar HWID'
+            btnEl.classList.remove('copied')
+        }, 2000)
+    }).catch(() => {
+        const ta = document.createElement('textarea')
+        ta.value = hwid
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+        btnEl.textContent = '✓ Copiado'
+        btnEl.classList.add('copied')
+        setTimeout(() => {
+            btnEl.textContent = 'Copiar HWID'
+            btnEl.classList.remove('copied')
+        }, 2000)
+    })
+}
+
 function filterUsers() {
     const search = document.getElementById('search-input').value.toLowerCase()
     const status = document.getElementById('filter-status').value
@@ -434,7 +436,6 @@ function filterUsers() {
     renderTable(filtered)
 }
 
-// ── TABLA ─────────────────────────────────────────
 function renderTable(list) {
     const container = document.getElementById('user-table-container')
     if (!list || list.length === 0) {
@@ -464,12 +465,21 @@ function renderTable(list) {
             : `<button class="btn btn-danger btn-sm" onclick="toggleBan('${u.id}',true)">Banear</button>`
 
         const rowClass = u.banned ? 'banned' : (!u.active || status === 'expired' ? 'paused' : '')
-        const notes = u.notes ? `<div style="font-size:11px;color:#555;margin-top:2px;" title="${u.notes}">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>` : ''
+        const notes    = u.notes ? `<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>` : ''
+
+        const hwidShort = u.hwid ? u.hwid.substring(0, 12) + '...' : '—'
+        const hwidCell  = u.hwid
+            ? `<div class="hwid-cell">
+                 <span class="hwid-text" title="${u.hwid}">${hwidShort}</span>
+                 <button class="btn-copy" onclick="copyHWID('${u.hwid.replace(/'/g,"\\'")}', this)">Copiar HWID</button>
+               </div>`
+            : '<span style="color:#444;font-size:12px;">—</span>'
 
         return `
         <tr class="${rowClass}">
             <td><div style="font-weight:500;">${u.username}</div>${notes}</td>
             <td style="color:#666;font-size:12px;">${u.user_id}</td>
+            <td>${hwidCell}</td>
             <td>${scriptBadge}</td>
             <td>${formatPlaceId(u.place_id)}</td>
             <td>${formatExpires(u.expires)}</td>
@@ -485,7 +495,7 @@ function renderTable(list) {
     container.innerHTML = `
     <table>
         <thead><tr>
-            <th>Usuario</th><th>UserId</th><th>Lista</th>
+            <th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th>
             <th>Juego</th><th>Expira</th><th>Estado</th>
             <th style="text-align:right;">Acciones</th>
         </tr></thead>
@@ -493,7 +503,6 @@ function renderTable(list) {
     </table>`
 }
 
-// ── AGREGAR ───────────────────────────────────────
 async function addUser() {
     const username    = document.getElementById('new-username').value.trim()
     const user_id     = document.getElementById('new-userid').value.trim()
@@ -515,10 +524,7 @@ async function addUser() {
     const res = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({
-            username, user_id, hwid, script_name, expires, notes,
-            place_id: place_id ? parseInt(place_id) : 0
-        })
+        body: JSON.stringify({ username, user_id, hwid, script_name, expires, notes, place_id: place_id ? parseInt(place_id) : 0 })
     })
     const data = await res.json()
 
@@ -546,7 +552,6 @@ async function addUser() {
     }
 }
 
-// ── ACCIONES ──────────────────────────────────────
 async function toggleActive(id, active) {
     await fetch('/api/admin', {
         method: 'PATCH',
