@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ allowed: false })
     }
 
-    const { userId, username, hwid, scriptName, token } = req.body
+    const { userId, username, hwid, scriptName, token, placeId } = req.body
 
     if (!token || token !== process.env.API_TOKEN) {
         return res.status(403).json({ allowed: false, reason: "Token invalido" })
@@ -45,8 +45,17 @@ export default async function handler(req, res) {
         return res.json({ allowed: false, reason: "Acceso revocado" })
     }
 
+    if (!entry.active) {
+        return res.json({ allowed: false, reason: "Acceso desactivado temporalmente" })
+    }
+
     if (entry.expires !== 0 && Date.now() / 1000 > entry.expires) {
         return res.json({ allowed: false, reason: "Acceso expirado" })
+    }
+
+    // Verificar PlaceId — 0 significa todos los juegos
+    if (entry.place_id !== 0 && placeId && entry.place_id !== parseInt(placeId)) {
+        return res.json({ allowed: false, reason: "Este acceso no es valido para este juego" })
     }
 
     return res.json({ allowed: true, accessType: entry.script_name })
