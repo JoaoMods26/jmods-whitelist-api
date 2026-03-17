@@ -17,18 +17,15 @@ export default async function handler(req, res) {
             .from('whitelist')
             .select('*')
             .order('created_at', { ascending: false })
-
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ users: data })
     }
 
     if (req.method === "POST") {
         const { username, user_id, hwid, script_name, expires } = req.body
-
         if (!username || !user_id || !hwid) {
             return res.status(400).json({ error: "Faltan datos" })
         }
-
         const { data, error } = await supabase
             .from('whitelist')
             .insert([{
@@ -40,35 +37,29 @@ export default async function handler(req, res) {
                 expires: expires || 0
             }])
             .select()
-
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true, user: data[0] })
     }
 
     if (req.method === "PATCH") {
         const { id, banned, expires } = req.body
-
         const updates = {}
         if (banned !== undefined) updates.banned = banned
         if (expires !== undefined) updates.expires = expires
-
         const { error } = await supabase
             .from('whitelist')
             .update(updates)
             .eq('id', id)
-
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
     if (req.method === "DELETE") {
         const { id } = req.body
-
         const { error } = await supabase
             .from('whitelist')
             .delete()
             .eq('id', id)
-
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
