@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const { createClient } = require('@supabase/supabase-js')
 
 export default async function handler(req, res) {
 
