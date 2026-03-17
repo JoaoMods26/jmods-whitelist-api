@@ -46,7 +46,6 @@
   .msg { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; }
   .msg-error { background: #2a0a0a; color: #f07070; border: 1px solid #5a1a1a; }
   .msg-success { background: #0a2a1a; color: #40c070; border: 1px solid #1a5a30; }
-  .debug { background: #111; border: 1px solid #333; border-radius: 8px; padding: 12px; font-size: 12px; color: #666; font-family: monospace; margin-bottom: 1rem; }
 </style>
 </head>
 <body>
@@ -55,10 +54,9 @@
   <div class="login-box">
     <h1>Jmods Panel</h1>
     <p>Acceso restringido</p>
-    <div id="api-status" style="font-size:12px; margin-bottom:12px; color:#666;">Verificando API...</div>
     <input type="password" id="password-input" placeholder="Contraseña de admin..." style="margin-bottom:12px;" />
     <button class="btn btn-primary" style="width:100%;" onclick="login()">Entrar</button>
-    <div id="login-error" class="msg msg-error" style="display:none;"></div>
+    <div id="login-error" class="msg msg-error" style="display:none;">Contraseña incorrecta</div>
   </div>
 </div>
 
@@ -70,8 +68,6 @@
     </div>
     <button class="btn btn-danger" onclick="logout()">Salir</button>
   </div>
-
-  <div id="debug-box" class="debug" style="display:none;"></div>
 
   <div class="stats">
     <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div>
@@ -94,7 +90,7 @@
         <option value="Jailxd">Jailxd</option>
         <option value="BloxVIP">BloxVIP</option>
       </select>
-      <input id="new-expires" type="date" />
+      <input id="new-expires" type="date" title="Fecha de expiración (dejar vacío = nunca expira)" />
       <button class="btn btn-primary" onclick="addUser()">+ Agregar</button>
     </div>
     <div id="add-msg" style="display:none;"></div>
@@ -110,28 +106,6 @@
 let adminPassword = ''
 let users = []
 
-async function checkAPI() {
-    try {
-        const res = await fetch('/api/test')
-        const data = await res.json()
-        const el = document.getElementById('api-status')
-        if (data.status === 'ok') {
-            el.style.color = '#40c070'
-            el.textContent = '✓ API conectada — Variables: ' +
-                (data.variables.tiene_admin_password ? '✓ ADMIN_PASSWORD ' : '✗ ADMIN_PASSWORD ') +
-                (data.variables.tiene_supabase_url ? '✓ SUPABASE_URL' : '✗ SUPABASE_URL')
-        } else {
-            el.style.color = '#f07070'
-            el.textContent = '✗ API no responde'
-        }
-    } catch(e) {
-        document.getElementById('api-status').textContent = '✗ Error: ' + e.message
-        document.getElementById('api-status').style.color = '#f07070'
-    }
-}
-
-checkAPI()
-
 async function login() {
     const pw = document.getElementById('password-input').value.trim()
     if (!pw) return
@@ -145,7 +119,6 @@ async function login() {
         document.getElementById('login-screen').style.display = 'none'
         document.getElementById('panel').style.display = 'block'
     } else {
-        errEl.textContent = 'Contraseña incorrecta o error de conexión'
         errEl.style.display = 'block'
         adminPassword = ''
     }
@@ -169,18 +142,11 @@ async function fetchUsers() {
         })
         if (res.status === 403) return false
         const data = await res.json()
-        if (data.error) {
-            document.getElementById('debug-box').style.display = 'block'
-            document.getElementById('debug-box').textContent = 'Error Supabase: ' + data.error
-            return true
-        }
         users = data.users || []
         renderTable()
         updateStats()
         return true
-    } catch(e) {
-        document.getElementById('debug-box').style.display = 'block'
-        document.getElementById('debug-box').textContent = 'Error fetch: ' + e.message
+    } catch {
         return false
     }
 }
@@ -239,7 +205,8 @@ function renderTable() {
     <table>
         <thead><tr>
             <th>Usuario</th><th>UserId</th><th>Lista</th>
-            <th>Expira</th><th>Estado</th><th style="text-align:right;">Acciones</th>
+            <th>Expira</th><th>Estado</th>
+            <th style="text-align:right;">Acciones</th>
         </tr></thead>
         <tbody>${rows}</tbody>
     </table>`
@@ -296,7 +263,7 @@ async function toggleBan(id, banned) {
 }
 
 async function deleteUser(id) {
-    if (!confirm('¿Borrar este usuario?')) return
+    if (!confirm('¿Borrar este usuario permanentemente?')) return
     await fetch('/api/admin', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
