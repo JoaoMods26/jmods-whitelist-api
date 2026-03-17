@@ -2,7 +2,6 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 export default async function handler(req, res) {
 
-    -- Verificar contraseña del panel
     const authHeader = req.headers['x-admin-password']
     if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD) {
         return res.status(403).json({ error: "No autorizado" })
@@ -13,7 +12,6 @@ export default async function handler(req, res) {
         process.env.SUPABASE_KEY
     )
 
-    -- GET: obtener lista completa
     if (req.method === "GET") {
         const { data, error } = await supabase
             .from('whitelist')
@@ -24,7 +22,6 @@ export default async function handler(req, res) {
         return res.json({ users: data })
     }
 
-    -- POST: agregar usuario
     if (req.method === "POST") {
         const { username, user_id, hwid, script_name, expires } = req.body
 
@@ -48,7 +45,6 @@ export default async function handler(req, res) {
         return res.json({ success: true, user: data[0] })
     }
 
-    -- PATCH: banear/desbanear o editar
     if (req.method === "PATCH") {
         const { id, banned, expires } = req.body
 
@@ -65,7 +61,6 @@ export default async function handler(req, res) {
         return res.json({ success: true })
     }
 
-    -- DELETE: borrar usuario
     if (req.method === "DELETE") {
         const { id } = req.body
 
