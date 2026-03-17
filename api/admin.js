@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const { username, user_id, hwid, script_name, expires, place_id } = req.body
+        const { username, user_id, hwid, script_name, expires, place_id, notes } = req.body
         if (!username || !user_id || !hwid) {
             return res.status(400).json({ error: "Faltan datos" })
         }
@@ -30,13 +30,14 @@ export default async function handler(req, res) {
             .from('whitelist')
             .insert([{
                 username,
-                user_id: parseInt(user_id),
+                user_id:     parseInt(user_id),
                 hwid,
                 script_name: script_name || 'global',
-                banned: false,
-                active: true,
-                expires: expires || 0,
-                place_id: place_id ? parseInt(place_id) : 0
+                banned:      false,
+                active:      true,
+                expires:     expires || 0,
+                place_id:    place_id ? parseInt(place_id) : 0,
+                notes:       notes || ''
             }])
             .select()
         if (error) return res.status(500).json({ error: error.message })
@@ -44,11 +45,12 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "PATCH") {
-        const { id, banned, active, expires } = req.body
+        const { id, banned, active, expires, notes } = req.body
         const updates = {}
         if (banned  !== undefined) updates.banned  = banned
         if (active  !== undefined) updates.active  = active
         if (expires !== undefined) updates.expires = expires
+        if (notes   !== undefined) updates.notes   = notes
         const { error } = await supabase
             .from('whitelist')
             .update(updates)
