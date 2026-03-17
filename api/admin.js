@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const { username, user_id, hwid, script_name, expires } = req.body
+        const { username, user_id, hwid, script_name, expires, place_id } = req.body
         if (!username || !user_id || !hwid) {
             return res.status(400).json({ error: "Faltan datos" })
         }
@@ -34,7 +34,9 @@ export default async function handler(req, res) {
                 hwid,
                 script_name: script_name || 'global',
                 banned: false,
-                expires: expires || 0
+                active: true,
+                expires: expires || 0,
+                place_id: place_id ? parseInt(place_id) : 0
             }])
             .select()
         if (error) return res.status(500).json({ error: error.message })
@@ -42,9 +44,10 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "PATCH") {
-        const { id, banned, expires } = req.body
+        const { id, banned, active, expires } = req.body
         const updates = {}
-        if (banned !== undefined) updates.banned = banned
+        if (banned  !== undefined) updates.banned  = banned
+        if (active  !== undefined) updates.active  = active
         if (expires !== undefined) updates.expires = expires
         const { error } = await supabase
             .from('whitelist')
