@@ -11,41 +11,46 @@
   .login-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 2rem; width: 340px; text-align: center; }
   .login-box h1 { font-size: 18px; margin-bottom: 4px; }
   .login-box p { font-size: 13px; color: #666; margin-bottom: 1.5rem; }
-  #panel { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
+  #panel { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
   .stat { background: #111; border: 1px solid #222; border-radius: 10px; padding: 1rem; }
   .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; }
   .stat-value { font-size: 24px; font-weight: 500; }
   .card { background: #111; border: 1px solid #222; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
   .card-title { font-size: 14px; font-weight: 500; margin-bottom: 1rem; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .form-full { margin-bottom: 8px; }
-  .form-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   input, select { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #e0e0e0; outline: none; }
   input:focus, select:focus { border-color: #444; }
   .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid; }
   .btn-primary { background: #1a3a5c; color: #7eb8f7; border-color: #2a5a8c; }
   .btn-warning { background: #3a2a0a; color: #f0a030; border-color: #5a4010; }
   .btn-success { background: #0a2a1a; color: #40c070; border-color: #1a5a30; }
-  .btn-danger { background: #2a0a0a; color: #f07070; border-color: #5a1a1a; }
+  .btn-danger  { background: #2a0a0a; color: #f07070; border-color: #5a1a1a; }
+  .btn-neutral { background: #1a1a2a; color: #9090d0; border-color: #2a2a5a; }
   .btn-sm { padding: 4px 10px; font-size: 11px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { padding: 10px 12px; text-align: left; font-weight: 500; color: #666; border-bottom: 1px solid #222; }
-  td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; }
+  th { padding: 10px 12px; text-align: left; font-weight: 500; color: #666; border-bottom: 1px solid #222; white-space: nowrap; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr.banned td { opacity: 0.4; text-decoration: line-through; }
-  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; }
-  .badge-global { background: #1a3a5c; color: #7eb8f7; }
-  .badge-script { background: #2a2a2a; color: #888; }
-  .badge-active { background: #0a2a1a; color: #40c070; }
-  .badge-banned { background: #2a0a0a; color: #f07070; }
-  .badge-expired { background: #3a2a0a; color: #f0a030; }
-  .actions { display: flex; gap: 6px; justify-content: flex-end; }
+  tr.paused td { opacity: 0.6; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+  .badge-global  { background: #1a3a5c; color: #7eb8f7; }
+  .badge-script  { background: #2a2a2a; color: #888; }
+  .badge-active  { background: #0a2a1a; color: #40c070; }
+  .badge-banned  { background: #2a0a0a; color: #f07070; }
+  .badge-paused  { background: #3a2a0a; color: #f0a030; }
+  .badge-expired { background: #2a2a2a; color: #666; }
+  .actions { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
   .empty { text-align: center; padding: 3rem; color: #444; font-size: 14px; }
   .msg { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; }
-  .msg-error { background: #2a0a0a; color: #f07070; border: 1px solid #5a1a1a; }
+  .msg-error   { background: #2a0a0a; color: #f07070; border: 1px solid #5a1a1a; }
   .msg-success { background: #0a2a1a; color: #40c070; border: 1px solid #1a5a30; }
+  .hint { font-size: 11px; color: #555; margin-top: 4px; }
+  .table-wrap { overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -63,8 +68,8 @@
 <div id="panel">
   <div class="header">
     <div>
-      <h1 style="font-size:20px; font-weight:500;">Jmods Whitelist Panel</h1>
-      <p style="font-size:13px; color:#666; margin-top:4px;">joao_mods</p>
+      <h1 style="font-size:20px;font-weight:500;">Jmods Whitelist Panel</h1>
+      <p style="font-size:13px;color:#666;margin-top:4px;">joao_mods</p>
     </div>
     <button class="btn btn-danger" onclick="logout()">Salir</button>
   </div>
@@ -72,6 +77,7 @@
   <div class="stats">
     <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div>
     <div class="stat"><div class="stat-label">Activos</div><div class="stat-value" style="color:#40c070" id="stat-active">—</div></div>
+    <div class="stat"><div class="stat-label">Pausados</div><div class="stat-value" style="color:#f0a030" id="stat-paused">—</div></div>
     <div class="stat"><div class="stat-label">Baneados</div><div class="stat-value" style="color:#f07070" id="stat-banned">—</div></div>
   </div>
 
@@ -84,21 +90,33 @@
     <div class="form-full">
       <input id="new-hwid" placeholder="HWID (del embed de Discord)" />
     </div>
-    <div class="form-bottom">
-      <select id="new-script">
-        <option value="global">global</option>
-        <option value="Jailxd">Jailxd</option>
-        <option value="BloxVIP">BloxVIP</option>
-      </select>
-      <input id="new-expires" type="date" title="Fecha de expiración (dejar vacío = nunca expira)" />
-      <button class="btn btn-primary" onclick="addUser()">+ Agregar</button>
+    <div class="form-grid-3">
+      <div>
+        <input id="new-placeid" placeholder="PlaceId del juego" type="number" value="0" />
+        <p class="hint">0 = funciona en todos los juegos</p>
+      </div>
+      <div>
+        <input id="new-expires" type="date" />
+        <p class="hint">Vacío = nunca expira</p>
+      </div>
+      <div>
+        <select id="new-script">
+          <option value="global">global (todos los scripts)</option>
+          <option value="Jailxd">Jailxd</option>
+          <option value="BloxVIP">BloxVIP</option>
+        </select>
+        <p class="hint">Lista a la que pertenece</p>
+      </div>
     </div>
+    <button class="btn btn-primary" onclick="addUser()" style="width:100%;margin-top:8px;">+ Agregar usuario</button>
     <div id="add-msg" style="display:none;"></div>
   </div>
 
   <div class="card">
     <div class="card-title">Usuarios registrados</div>
-    <div id="user-table-container"><div class="empty">Cargando...</div></div>
+    <div class="table-wrap">
+      <div id="user-table-container"><div class="empty">Cargando...</div></div>
+    </div>
   </div>
 </div>
 
@@ -110,10 +128,8 @@ async function login() {
     const pw = document.getElementById('password-input').value.trim()
     if (!pw) return
     adminPassword = pw
-
     const errEl = document.getElementById('login-error')
     errEl.style.display = 'none'
-
     const ok = await fetchUsers()
     if (ok) {
         document.getElementById('login-screen').style.display = 'none'
@@ -146,20 +162,22 @@ async function fetchUsers() {
         renderTable()
         updateStats()
         return true
-    } catch {
-        return false
-    }
+    } catch { return false }
 }
 
 function updateStats() {
     const banned = users.filter(u => u.banned).length
+    const paused = users.filter(u => !u.active && !u.banned).length
+    const active = users.filter(u => u.active && !u.banned).length
     document.getElementById('stat-total').textContent  = users.length
-    document.getElementById('stat-active').textContent = users.length - banned
+    document.getElementById('stat-active').textContent = active
+    document.getElementById('stat-paused').textContent = paused
     document.getElementById('stat-banned').textContent = banned
 }
 
 function getStatus(u) {
     if (u.banned) return 'banned'
+    if (!u.active) return 'paused'
     if (u.expires !== 0 && Date.now() / 1000 > u.expires) return 'expired'
     return 'active'
 }
@@ -169,43 +187,62 @@ function formatExpires(ts) {
     return new Date(ts * 1000).toLocaleDateString('es')
 }
 
+function formatPlaceId(pid) {
+    if (!pid || pid === 0) return '<span style="color:#555;font-size:12px;">Todos</span>'
+    return `<a href="https://www.roblox.com/games/${pid}" target="_blank" style="color:#7eb8f7;text-decoration:none;font-size:12px;">${pid}</a>`
+}
+
 function renderTable() {
     const container = document.getElementById('user-table-container')
     if (users.length === 0) {
         container.innerHTML = '<div class="empty">No hay usuarios registrados</div>'
         return
     }
+
     const rows = users.map(u => {
         const status = getStatus(u)
         const statusBadge = {
             active:  '<span class="badge badge-active">Activo</span>',
             banned:  '<span class="badge badge-banned">Baneado</span>',
+            paused:  '<span class="badge badge-paused">Pausado</span>',
             expired: '<span class="badge badge-expired">Expirado</span>'
         }[status]
+
         const scriptBadge = u.script_name === 'global'
             ? '<span class="badge badge-global">global</span>'
             : `<span class="badge badge-script">${u.script_name}</span>`
-        const actionBtn = u.banned
-            ? `<button class="btn btn-success btn-sm" onclick="toggleBan('${u.id}', false)">Activar</button>`
-            : `<button class="btn btn-warning btn-sm" onclick="toggleBan('${u.id}', true)">Banear</button>`
+
+        const pauseBtn = u.active
+            ? `<button class="btn btn-warning btn-sm" onclick="toggleActive('${u.id}', false)">Pausar</button>`
+            : `<button class="btn btn-success btn-sm" onclick="toggleActive('${u.id}', true)">Activar</button>`
+
+        const banBtn = u.banned
+            ? `<button class="btn btn-neutral btn-sm" onclick="toggleBan('${u.id}', false)">Desbanear</button>`
+            : `<button class="btn btn-danger btn-sm" onclick="toggleBan('${u.id}', true)">Banear</button>`
+
+        const rowClass = u.banned ? 'banned' : (!u.active ? 'paused' : '')
+
         return `
-        <tr class="${u.banned ? 'banned' : ''}">
-            <td>${u.username}</td>
-            <td style="color:#666;">${u.user_id}</td>
+        <tr class="${rowClass}">
+            <td style="font-weight:500;">${u.username}</td>
+            <td style="color:#666;font-size:12px;">${u.user_id}</td>
             <td>${scriptBadge}</td>
-            <td style="color:#666;">${formatExpires(u.expires)}</td>
+            <td>${formatPlaceId(u.place_id)}</td>
+            <td style="color:#666;font-size:12px;">${formatExpires(u.expires)}</td>
             <td>${statusBadge}</td>
             <td><div class="actions">
-                ${actionBtn}
+                ${pauseBtn}
+                ${banBtn}
                 <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Borrar</button>
             </div></td>
         </tr>`
     }).join('')
+
     container.innerHTML = `
     <table>
         <thead><tr>
             <th>Usuario</th><th>UserId</th><th>Lista</th>
-            <th>Expira</th><th>Estado</th>
+            <th>Juego (PlaceId)</th><th>Expira</th><th>Estado</th>
             <th style="text-align:right;">Acciones</th>
         </tr></thead>
         <tbody>${rows}</tbody>
@@ -218,11 +255,12 @@ async function addUser() {
     const hwid        = document.getElementById('new-hwid').value.trim()
     const script_name = document.getElementById('new-script').value
     const expiresDate = document.getElementById('new-expires').value
+    const place_id    = document.getElementById('new-placeid').value.trim()
     const msgEl       = document.getElementById('add-msg')
 
     if (!username || !user_id || !hwid) {
         msgEl.className = 'msg msg-error'
-        msgEl.textContent = 'Rellena username, userId y HWID'
+        msgEl.textContent = 'Rellena username, UserId y HWID'
         msgEl.style.display = 'block'
         return
     }
@@ -232,7 +270,10 @@ async function addUser() {
     const res = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ username, user_id, hwid, script_name, expires })
+        body: JSON.stringify({
+            username, user_id, hwid, script_name, expires,
+            place_id: place_id ? parseInt(place_id) : 0
+        })
     })
     const data = await res.json()
 
@@ -240,10 +281,11 @@ async function addUser() {
         msgEl.className = 'msg msg-success'
         msgEl.textContent = '✓ Usuario agregado correctamente'
         msgEl.style.display = 'block'
-        document.getElementById('new-username').value = ''
-        document.getElementById('new-userid').value   = ''
-        document.getElementById('new-hwid').value     = ''
-        document.getElementById('new-expires').value  = ''
+        document.getElementById('new-username').value  = ''
+        document.getElementById('new-userid').value    = ''
+        document.getElementById('new-hwid').value      = ''
+        document.getElementById('new-expires').value   = ''
+        document.getElementById('new-placeid').value   = '0'
         fetchUsers()
         setTimeout(() => msgEl.style.display = 'none', 3000)
     } else {
@@ -251,6 +293,15 @@ async function addUser() {
         msgEl.textContent = 'Error: ' + (data.error || 'desconocido')
         msgEl.style.display = 'block'
     }
+}
+
+async function toggleActive(id, active) {
+    await fetch('/api/admin', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({ id, active })
+    })
+    fetchUsers()
 }
 
 async function toggleBan(id, banned) {
