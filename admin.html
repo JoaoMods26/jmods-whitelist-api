@@ -977,10 +977,10 @@ function renderAdminTable() {
         const roleBadge = u.role === 'owner'
             ? '<span class="badge" style="background:#3a2a0a;color:#f0a030;">Owner</span>'
             : '<span class="badge" style="background:#1a2a4a;color:#7eb8f7;">Admin</span>'
-        const changeBtn = u.role === 'owner'
-            ? '<button class="btn btn-neutral btn-sm" onclick="changeAdminRole(''+u.id+'','admin')">→ Admin</button>'
-            : '<button class="btn btn-warning btn-sm" onclick="changeAdminRole(''+u.id+'','owner')">→ Owner</button>'
-        return '<tr><td style="font-weight:500;">'+u.username+'</td><td style="color:#666;font-size:12px;">'+u.user_id+'</td><td>'+roleBadge+'</td><td style="color:#666;font-size:12px;">'+new Date(u.created_at).toLocaleDateString('es')+'</td><td><div class="actions">'+changeBtn+'<button class="btn btn-danger btn-sm" onclick="removeAdminUser(''+u.id+'')">Borrar</button></div></td></tr>'
+const changeBtn = u.role === 'owner'
+            ? `<button class="btn btn-neutral btn-sm" onclick="changeAdminRole('${u.id}','admin')">→ Admin</button>`
+            : `<button class="btn btn-warning btn-sm" onclick="changeAdminRole('${u.id}','owner')">→ Owner</button>`
+        return '<tr><td style="font-weight:500;">'+u.username+'</td><td style="color:#666;font-size:12px;">'+u.user_id+'</td><td>'+roleBadge+'</td><td style="color:#666;font-size:12px;">'+new Date(u.created_at).toLocaleDateString('es')+'</td><td><div class="actions">'+changeBtn+'<button class="btn btn-danger btn-sm" onclick="removeAdminUser('${u.id}')">Borrar</button></div></td></tr>'
     }).join('')
     container.innerHTML = '<table><thead><tr><th>Username</th><th>UserId</th><th>Rol</th><th>Agregado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>'+rows+'</tbody></table>'
 }
