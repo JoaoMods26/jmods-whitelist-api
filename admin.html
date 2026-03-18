@@ -12,18 +12,34 @@
   .login-box h1 { font-size: 18px; margin-bottom: 4px; }
   .login-box p { font-size: 13px; color: #666; margin-bottom: 1.5rem; }
   #panel { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  /* PAGE TABS */
+  .page-tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 1px solid #1a1a1a; }
+  .page-tab { padding: 9px 18px; border-radius: 8px 8px 0 0; font-size: 13px; cursor: pointer; border: 1px solid transparent; border-bottom: none; background: transparent; color: #555; transition: all 0.2s; margin-bottom: -1px; }
+  .page-tab:hover { color: #aaa; background: #0f0f0f; }
+  .page-tab.active { background: #111; color: #e0e0e0; border-color: #222; border-bottom-color: #111; }
+  .page-tab.tab-whitelist.active { color: #7eb8f7; }
+  .page-tab.tab-jmods.active { color: #c084fc; }
+  .page-content { display: none; }
+  .page-content.active { display: block; }
+  /* STATS */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
   .stat { background: #111; border: 1px solid #222; border-radius: 10px; padding: 1rem; }
   .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; }
   .stat-value { font-size: 24px; font-weight: 500; }
+  /* CARD */
   .card { background: #111; border: 1px solid #222; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
   .card-title { font-size: 14px; font-weight: 500; margin-bottom: 1rem; }
+  .card.jmods-card { border-color: #2a1a3a; }
+  .card.jmods-card .card-title { color: #c084fc; }
+  .jmods-stats .stat { border-color: #2a1a3a; }
+  /* FORM */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .form-full { margin-bottom: 8px; }
   input, select { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #e0e0e0; outline: none; }
   input:focus, select:focus { border-color: #444; }
+  /* BUTTONS */
   .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid; transition: opacity 0.15s; }
   .btn:hover { opacity: 0.8; }
   .btn-primary { background: #1a3a5c; color: #7eb8f7; border-color: #2a5a8c; }
@@ -32,10 +48,12 @@
   .btn-danger  { background: #2a0a0a; color: #f07070; border-color: #5a1a1a; }
   .btn-neutral { background: #1a1a2a; color: #9090d0; border-color: #2a2a5a; }
   .btn-edit    { background: #1a2a1a; color: #60d080; border-color: #2a4a2a; }
+  .btn-purple  { background: #1f1a3a; color: #c084fc; border-color: #3a2a5a; }
   .btn-sm { padding: 4px 10px; font-size: 11px; }
   .btn-copy { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; padding: 2px 7px; font-size: 11px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
   .btn-copy:hover { background: #222; color: #aaa; }
   .btn-copy.copied { background: #0a2a1a; color: #40c070; border-color: #1a5a30; }
+  /* MODAL */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
   .modal { background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
@@ -50,8 +68,10 @@
   .modal-section-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
   .modal-footer { display: flex; gap: 8px; margin-top: 1.25rem; }
   .modal-footer .btn { flex: 1; }
+  /* MISC */
   .section-divider { border: none; border-top: 1px solid #1a1a1a; margin: 12px 0; }
   .hint { font-size: 11px; color: #555; margin-top: 4px; }
+  /* DURATION DROPDOWN */
   .duration-dropdown { position: relative; margin-bottom: 8px; }
   .duration-trigger { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #e0e0e0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
   .duration-trigger:hover { border-color: #444; }
@@ -69,19 +89,25 @@
   .custom-date-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2a2a; display: none; }
   .custom-date-wrap label { font-size: 11px; color: #666; display: block; margin-bottom: 4px; }
   .expires-preview { font-size: 12px; color: #666; margin-bottom: 8px; padding: 6px 10px; background: #0f0f0f; border-radius: 6px; min-height: 28px; display: flex; align-items: center; }
+  /* TABLE */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { padding: 10px 12px; text-align: left; font-weight: 500; color: #666; border-bottom: 1px solid #222; white-space: nowrap; }
   td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr.banned td { opacity: 0.4; text-decoration: line-through; }
   tr.paused td { opacity: 0.6; }
+  /* BADGES */
   .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
-  .badge-global  { background: #1a3a5c; color: #7eb8f7; }
-  .badge-script  { background: #2a2a2a; color: #888; }
-  .badge-active  { background: #0a2a1a; color: #40c070; }
-  .badge-banned  { background: #2a0a0a; color: #f07070; }
-  .badge-paused  { background: #3a2a0a; color: #f0a030; }
-  .badge-expired { background: #2a2a2a; color: #666; }
+  .badge-global   { background: #1a3a5c; color: #7eb8f7; }
+  .badge-script   { background: #2a2a2a; color: #888; }
+  .badge-active   { background: #0a2a1a; color: #40c070; }
+  .badge-banned   { background: #2a0a0a; color: #f07070; }
+  .badge-paused   { background: #3a2a0a; color: #f0a030; }
+  .badge-expired  { background: #2a2a2a; color: #666; }
+  .badge-owner    { background: #2a1a3a; color: #c084fc; }
+  .badge-admin    { background: #1a2a3a; color: #7eb8f7; }
+  .badge-follower { background: #1a2a1a; color: #6ee7b7; }
+  .badge-inactive { background: #2a2a2a; color: #666; }
   .actions { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
   .empty { text-align: center; padding: 3rem; color: #444; font-size: 14px; }
   .msg { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; }
@@ -92,6 +118,14 @@
   .search-bar input { flex: 1; }
   .hwid-cell { display: flex; align-items: center; gap: 6px; }
   .hwid-text { font-size: 11px; color: #444; font-family: monospace; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* ROLE SELECTOR */
+  .role-select-wrap { display: flex; gap: 6px; margin-bottom: 8px; }
+  .role-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #666; font-size: 12px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .role-btn:hover { border-color: #444; color: #aaa; }
+  .role-btn.selected-owner    { background: #2a1a3a; color: #c084fc; border-color: #4a2a6a; }
+  .role-btn.selected-admin    { background: #1a2a3a; color: #7eb8f7; border-color: #2a4a6a; }
+  .role-btn.selected-follower { background: #1a2a1a; color: #6ee7b7; border-color: #2a4a2a; }
+  .role-desc-box { background: #0f0f0f; border-radius: 6px; padding: 8px 12px; font-size: 11px; color: #555; margin-top: 6px; min-height: 32px; }
 </style>
 </head>
 <body>
@@ -109,212 +143,289 @@
 <div id="panel">
   <div class="header">
     <div>
-      <h1 style="font-size:20px;font-weight:500;">Jmods Whitelist Panel</h1>
+      <h1 style="font-size:20px;font-weight:500;">Jmods Panel</h1>
       <p style="font-size:13px;color:#666;margin-top:4px;">joao_mods</p>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-neutral" onclick="fetchUsers()">↻ Refrescar</button>
+      <button class="btn btn-neutral" onclick="refreshAll()">↻ Refrescar</button>
       <button class="btn btn-danger" onclick="logout()">Salir</button>
     </div>
   </div>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div>
-    <div class="stat"><div class="stat-label">Activos</div><div class="stat-value" style="color:#40c070" id="stat-active">—</div></div>
-    <div class="stat"><div class="stat-label">Pausados</div><div class="stat-value" style="color:#f0a030" id="stat-paused">—</div></div>
-    <div class="stat"><div class="stat-label">Baneados</div><div class="stat-value" style="color:#f07070" id="stat-banned">—</div></div>
+  <!-- ── PAGE TABS ── -->
+  <div class="page-tabs">
+    <button class="page-tab tab-whitelist active" onclick="switchPage('whitelist')">📋 Whitelist de Scripts</button>
+    <button class="page-tab tab-jmods" onclick="switchPage('jmods')">👑 Usuarios JMods</button>
   </div>
 
-  <div class="card">
-    <div class="card-title">Agregar usuario</div>
-    <div class="form-grid">
-      <input id="new-username" placeholder="Username de Roblox" />
-      <input id="new-userid" placeholder="UserId (número)" type="number" />
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  PAGE: WHITELIST                                          -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div id="page-whitelist" class="page-content active">
+
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div>
+      <div class="stat"><div class="stat-label">Activos</div><div class="stat-value" style="color:#40c070" id="stat-active">—</div></div>
+      <div class="stat"><div class="stat-label">Pausados</div><div class="stat-value" style="color:#f0a030" id="stat-paused">—</div></div>
+      <div class="stat"><div class="stat-label">Baneados</div><div class="stat-value" style="color:#f07070" id="stat-banned">—</div></div>
     </div>
-    <div class="form-full">
-      <input id="new-hwid" placeholder="HWID (del embed de Discord)" />
-    </div>
-    <div class="form-grid-3">
-      <div>
-        <input id="new-placeid" placeholder="PlaceId del juego" type="number" value="0" />
-        <p class="hint">0 = todos los juegos</p>
+
+    <div class="card">
+      <div class="card-title">Agregar usuario</div>
+      <div class="form-grid">
+        <input id="new-username" placeholder="Username de Roblox" />
+        <input id="new-userid" placeholder="UserId (número)" type="number" />
       </div>
-      <div>
-        <select id="new-script" onchange="autoFillPlaceId('new')">
-          <option value="global" data-pid="0">🌍 global (todos los scripts)</option>
-          <option value="Brookhaven RP" data-pid="4924922222">Brookhaven RP</option>
-          <option value="Blox Fruits" data-pid="2753915549">Blox Fruits</option>
-          <option value="Adopt Me!" data-pid="920587237">Adopt Me!</option>
-          <option value="Tower of Hell" data-pid="1962086868">Tower of Hell</option>
-          <option value="Murder Mystery 2" data-pid="142823291">Murder Mystery 2</option>
-          <option value="MeepCity" data-pid="370731277">MeepCity</option>
-          <option value="Jailbreak" data-pid="606849621">Jailbreak</option>
-          <option value="Piggy" data-pid="4623386862">Piggy</option>
-          <option value="BedWars" data-pid="6872265039">BedWars</option>
-          <option value="Pet Simulator X" data-pid="6284583030">Pet Simulator X</option>
-          <option value="Royale High" data-pid="735030788">Royale High</option>
-          <option value="Welcome to Bloxburg" data-pid="185655149">Welcome to Bloxburg</option>
-          <option value="Arsenal" data-pid="286090429">Arsenal</option>
-          <option value="Work at a Pizza Place" data-pid="192800">Work at a Pizza Place</option>
-          <option value="Natural Disaster Survival" data-pid="189707">Natural Disaster Survival</option>
-          <option value="Evade" data-pid="9872472334">Evade</option>
-          <option value="Doors" data-pid="6516141723">Doors</option>
-          <option value="Rainbow Friends" data-pid="7991339063">Rainbow Friends</option>
-          <option value="Slap Battles" data-pid="6403373529">Slap Battles</option>
-          <option value="Anime Adventures" data-pid="8304191830">Anime Adventures</option>
-          <option value="King Legacy" data-pid="4520749081">King Legacy</option>
-          <option value="Shindo Life" data-pid="4616652839">Shindo Life</option>
-          <option value="All Star Tower Defense" data-pid="4996049426">All Star Tower Defense</option>
-          <option value="Vehicle Simulator" data-pid="171391948">Vehicle Simulator</option>
-          <option value="SharkBite" data-pid="734159876">SharkBite</option>
-          <option value="Speed Run 4" data-pid="183364845">Speed Run 4</option>
-          <option value="Hide and Seek Extreme" data-pid="205224386">Hide and Seek Extreme</option>
-          <option value="Epic Minigames" data-pid="277751860">Epic Minigames</option>
-          <option value="Flood Escape 2" data-pid="738339342">Flood Escape 2</option>
-          <option value="Theme Park Tycoon 2" data-pid="69184822">Theme Park Tycoon 2</option>
-          <option value="Build A Boat For Treasure" data-pid="537413528">Build A Boat For Treasure</option>
-          <option value="Super Bomb Survival" data-pid="260855499">Super Bomb Survival</option>
-          <option value="Zombie Attack" data-pid="1240123653">Zombie Attack</option>
-          <option value="Mad City" data-pid="1224212277">Mad City</option>
-          <option value="The Mimic" data-pid="6243699076">The Mimic</option>
-          <option value="Break In (Story)" data-pid="3851622790">Break In (Story)</option>
-          <option value="Breaking Point" data-pid="648362523">Breaking Point</option>
-          <option value="Tower Defense Simulator" data-pid="3260590327">Tower Defense Simulator</option>
-          <option value="Bee Swarm Simulator" data-pid="1537690962">Bee Swarm Simulator</option>
-          <option value="Mining Simulator" data-pid="2052243865">Mining Simulator</option>
-          <option value="Ninja Legends" data-pid="3956818381">Ninja Legends</option>
-          <option value="Muscle Legends" data-pid="3623096087">Muscle Legends</option>
-          <option value="Da Hood" data-pid="2788229376">Da Hood</option>
-          <option value="Grow a Garden" data-pid="126884695634066">Grow a Garden</option>
-          <option value="Fisch" data-pid="16732694052">Fisch</option>
-          <option value="Dress to Impress" data-pid="15101393044">Dress to Impress</option>
-          <option value="The Strongest Battlegrounds" data-pid="10449761463">The Strongest Battlegrounds</option>
-          <option value="Pet Simulator 99" data-pid="8737899170">Pet Simulator 99</option>
-          <option value="Blade Ball" data-pid="13772394625">Blade Ball</option>
-          <option value="Funky Friday" data-pid="6447798030">Funky Friday</option>
-          <option value="A Dusty Trip" data-pid="16389395869">A Dusty Trip</option>
-          <option value="Dandy's World" data-pid="16116270224">Dandy's World</option>
-          <option value="Sol's RNG" data-pid="15532962292">Sol's RNG</option>
-          <option value="Anime Vanguards" data-pid="16146832113">Anime Vanguards</option>
-          <option value="Toilet Tower Defense" data-pid="13775256536">Toilet Tower Defense</option>
-          <option value="Jujutsu Shenanigans" data-pid="9391468976">Jujutsu Shenanigans</option>
-          <option value="Steal a Brainrot" data-pid="109983668079237">Steal a Brainrot</option>
-          <option value="99 Nights in the Forest" data-pid="79546208627805">99 Nights in the Forest</option>
-          <option value="Dead Rails" data-pid="116495829188952">Dead Rails</option>
-          <option value="Anime Fighting Simulator" data-pid="6897345392">Anime Fighting Simulator</option>
-          <option value="Combat Warriors" data-pid="6923184197">Combat Warriors</option>
-          <option value="Restaurant Tycoon 2" data-pid="2483212155">Restaurant Tycoon 2</option>
-          <option value="Driving Empire" data-pid="1990346660">Driving Empire</option>
-          <option value="Anime Dimensions Simulator" data-pid="6933774673">Anime Dimensions Simulator</option>
-          <option value="Pls Donate" data-pid="8465852169">Pls Donate</option>
-          <option value="Berry Avenue" data-pid="7867483439">Berry Avenue</option>
-          <option value="Fruit Battlegrounds" data-pid="11827534733">Fruit Battlegrounds</option>
-          <option value="Grand Piece Online" data-pid="8929174468">Grand Piece Online</option>
-          <option value="Peroxide" data-pid="13871814407">Peroxide</option>
-          <option value="Type Soul" data-pid="11535519583">Type Soul</option>
-          <option value="Kaizen" data-pid="10654250308">Kaizen</option>
+      <div class="form-full">
+        <input id="new-hwid" placeholder="HWID (del embed de Discord)" />
+      </div>
+      <div class="form-grid-3">
+        <div>
+          <input id="new-placeid" placeholder="PlaceId del juego" type="number" value="0" />
+          <p class="hint">0 = todos los juegos</p>
+        </div>
+        <div>
+          <select id="new-script" onchange="autoFillPlaceId('new')">
+            <option value="global" data-pid="0">🌍 global (todos los scripts)</option>
+            <option value="Brookhaven RP" data-pid="4924922222">Brookhaven RP</option>
+            <option value="Blox Fruits" data-pid="2753915549">Blox Fruits</option>
+            <option value="Adopt Me!" data-pid="920587237">Adopt Me!</option>
+            <option value="Tower of Hell" data-pid="1962086868">Tower of Hell</option>
+            <option value="Murder Mystery 2" data-pid="142823291">Murder Mystery 2</option>
+            <option value="MeepCity" data-pid="370731277">MeepCity</option>
+            <option value="Jailbreak" data-pid="606849621">Jailbreak</option>
+            <option value="Piggy" data-pid="4623386862">Piggy</option>
+            <option value="BedWars" data-pid="6872265039">BedWars</option>
+            <option value="Pet Simulator X" data-pid="6284583030">Pet Simulator X</option>
+            <option value="Royale High" data-pid="735030788">Royale High</option>
+            <option value="Welcome to Bloxburg" data-pid="185655149">Welcome to Bloxburg</option>
+            <option value="Arsenal" data-pid="286090429">Arsenal</option>
+            <option value="Work at a Pizza Place" data-pid="192800">Work at a Pizza Place</option>
+            <option value="Natural Disaster Survival" data-pid="189707">Natural Disaster Survival</option>
+            <option value="Evade" data-pid="9872472334">Evade</option>
+            <option value="Doors" data-pid="6516141723">Doors</option>
+            <option value="Rainbow Friends" data-pid="7991339063">Rainbow Friends</option>
+            <option value="Slap Battles" data-pid="6403373529">Slap Battles</option>
+            <option value="Anime Adventures" data-pid="8304191830">Anime Adventures</option>
+            <option value="King Legacy" data-pid="4520749081">King Legacy</option>
+            <option value="Shindo Life" data-pid="4616652839">Shindo Life</option>
+            <option value="All Star Tower Defense" data-pid="4996049426">All Star Tower Defense</option>
+            <option value="Vehicle Simulator" data-pid="171391948">Vehicle Simulator</option>
+            <option value="SharkBite" data-pid="734159876">SharkBite</option>
+            <option value="Speed Run 4" data-pid="183364845">Speed Run 4</option>
+            <option value="Hide and Seek Extreme" data-pid="205224386">Hide and Seek Extreme</option>
+            <option value="Epic Minigames" data-pid="277751860">Epic Minigames</option>
+            <option value="Flood Escape 2" data-pid="738339342">Flood Escape 2</option>
+            <option value="Theme Park Tycoon 2" data-pid="69184822">Theme Park Tycoon 2</option>
+            <option value="Build A Boat For Treasure" data-pid="537413528">Build A Boat For Treasure</option>
+            <option value="Super Bomb Survival" data-pid="260855499">Super Bomb Survival</option>
+            <option value="Zombie Attack" data-pid="1240123653">Zombie Attack</option>
+            <option value="Mad City" data-pid="1224212277">Mad City</option>
+            <option value="The Mimic" data-pid="6243699076">The Mimic</option>
+            <option value="Break In (Story)" data-pid="3851622790">Break In (Story)</option>
+            <option value="Breaking Point" data-pid="648362523">Breaking Point</option>
+            <option value="Tower Defense Simulator" data-pid="3260590327">Tower Defense Simulator</option>
+            <option value="Bee Swarm Simulator" data-pid="1537690962">Bee Swarm Simulator</option>
+            <option value="Mining Simulator" data-pid="2052243865">Mining Simulator</option>
+            <option value="Ninja Legends" data-pid="3956818381">Ninja Legends</option>
+            <option value="Muscle Legends" data-pid="3623096087">Muscle Legends</option>
+            <option value="Da Hood" data-pid="2788229376">Da Hood</option>
+            <option value="Grow a Garden" data-pid="126884695634066">Grow a Garden</option>
+            <option value="Fisch" data-pid="16732694052">Fisch</option>
+            <option value="Dress to Impress" data-pid="15101393044">Dress to Impress</option>
+            <option value="The Strongest Battlegrounds" data-pid="10449761463">The Strongest Battlegrounds</option>
+            <option value="Pet Simulator 99" data-pid="8737899170">Pet Simulator 99</option>
+            <option value="Blade Ball" data-pid="13772394625">Blade Ball</option>
+            <option value="Funky Friday" data-pid="6447798030">Funky Friday</option>
+            <option value="A Dusty Trip" data-pid="16389395869">A Dusty Trip</option>
+            <option value="Dandy's World" data-pid="16116270224">Dandy's World</option>
+            <option value="Sol's RNG" data-pid="15532962292">Sol's RNG</option>
+            <option value="Anime Vanguards" data-pid="16146832113">Anime Vanguards</option>
+            <option value="Toilet Tower Defense" data-pid="13775256536">Toilet Tower Defense</option>
+            <option value="Jujutsu Shenanigans" data-pid="9391468976">Jujutsu Shenanigans</option>
+            <option value="Steal a Brainrot" data-pid="109983668079237">Steal a Brainrot</option>
+            <option value="99 Nights in the Forest" data-pid="79546208627805">99 Nights in the Forest</option>
+            <option value="Dead Rails" data-pid="116495829188952">Dead Rails</option>
+            <option value="Anime Fighting Simulator" data-pid="6897345392">Anime Fighting Simulator</option>
+            <option value="Combat Warriors" data-pid="6923184197">Combat Warriors</option>
+            <option value="Restaurant Tycoon 2" data-pid="2483212155">Restaurant Tycoon 2</option>
+            <option value="Driving Empire" data-pid="1990346660">Driving Empire</option>
+            <option value="Anime Dimensions Simulator" data-pid="6933774673">Anime Dimensions Simulator</option>
+            <option value="Pls Donate" data-pid="8465852169">Pls Donate</option>
+            <option value="Berry Avenue" data-pid="7867483439">Berry Avenue</option>
+            <option value="Fruit Battlegrounds" data-pid="11827534733">Fruit Battlegrounds</option>
+            <option value="Grand Piece Online" data-pid="8929174468">Grand Piece Online</option>
+            <option value="Peroxide" data-pid="13871814407">Peroxide</option>
+            <option value="Type Soul" data-pid="11535519583">Type Soul</option>
+            <option value="Kaizen" data-pid="10654250308">Kaizen</option>
+          </select>
+          <p class="hint">Lista de acceso</p>
+        </div>
+        <div>
+          <input id="new-notes" placeholder="Notas (opcional)" />
+          <p class="hint">Ej: pagó por PayPal</p>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="form-full">
+        <p class="hint" style="margin-bottom:6px;">Duración del acceso</p>
+        <div class="duration-dropdown" id="add-dd">
+          <div class="duration-trigger" onclick="toggleDD('add-dd')">
+            <span id="add-duration-label">♾️ Permanente</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="duration-panel" id="add-dd-panel">
+            <div class="preset-group">
+              <div class="preset-group-label">Minutos</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,180)">3 min</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,300)">5 min</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,900)">15 min</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,1800)">30 min</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,2700)">45 min</button>
+              </div>
+            </div>
+            <div class="preset-group">
+              <div class="preset-group-label">Horas</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,3600)">1 hora</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,7200)">2 horas</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,10800)">3 horas</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,21600)">6 horas</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,43200)">12 horas</button>
+              </div>
+            </div>
+            <div class="preset-group">
+              <div class="preset-group-label">Días</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,86400)">1 día</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,172800)">2 días</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,259200)">3 días</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,432000)">5 días</button>
+              </div>
+            </div>
+            <div class="preset-group">
+              <div class="preset-group-label">Semanas</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,604800)">1 semana</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,1209600)">2 semanas</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,1814400)">3 semanas</button>
+              </div>
+            </div>
+            <div class="preset-group">
+              <div class="preset-group-label">Meses</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,2592000)">1 mes</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,5184000)">2 meses</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,7776000)">3 meses</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,15552000)">6 meses</button>
+              </div>
+            </div>
+            <div class="preset-group">
+              <div class="preset-group-label">Largo plazo</div>
+              <div class="preset-row">
+                <button class="btn-preset" onclick="selectPreset('add',this,31536000)">1 año</button>
+                <button class="btn-preset selected" onclick="selectPreset('add',this,0)">♾️ Permanente</button>
+                <button class="btn-preset" onclick="selectPreset('add',this,-1)">📅 Fecha exacta</button>
+              </div>
+            </div>
+            <div class="custom-date-wrap" id="add-custom-date">
+              <label>Fecha exacta:</label>
+              <input id="new-expires" type="date" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="expires-preview" id="add-expires-preview">♾️ Sin fecha de expiración — acceso permanente</div>
+      <button class="btn btn-primary" onclick="addUser()" style="width:100%;">+ Agregar usuario</button>
+      <div id="add-msg" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Usuarios registrados</div>
+      <div class="search-bar">
+        <input id="search-input" placeholder="Buscar por username..." oninput="filterUsers()" />
+        <select id="filter-status" onchange="filterUsers()" style="width:auto;min-width:130px;">
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="paused">Pausados</option>
+          <option value="banned">Baneados</option>
+          <option value="expired">Expirados</option>
         </select>
-        <p class="hint">Lista de acceso</p>
       </div>
-      <div>
-        <input id="new-notes" placeholder="Notas (opcional)" />
-        <p class="hint">Ej: pagó por PayPal</p>
+      <div class="table-wrap">
+        <div id="user-table-container"><div class="empty">Cargando...</div></div>
       </div>
     </div>
-    <hr class="section-divider">
-    <div class="form-full">
-      <p class="hint" style="margin-bottom:6px;">Duración del acceso</p>
-      <div class="duration-dropdown" id="add-dd">
-        <div class="duration-trigger" onclick="toggleDD('add-dd')">
-          <span id="add-duration-label">♾️ Permanente</span>
-          <span class="arrow">▼</span>
-        </div>
-        <div class="duration-panel" id="add-dd-panel">
-          <div class="preset-group">
-            <div class="preset-group-label">Minutos</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,180)">3 min</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,300)">5 min</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,900)">15 min</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,1800)">30 min</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,2700)">45 min</button>
-            </div>
-          </div>
-          <div class="preset-group">
-            <div class="preset-group-label">Horas</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,3600)">1 hora</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,7200)">2 horas</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,10800)">3 horas</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,21600)">6 horas</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,43200)">12 horas</button>
-            </div>
-          </div>
-          <div class="preset-group">
-            <div class="preset-group-label">Días</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,86400)">1 día</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,172800)">2 días</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,259200)">3 días</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,432000)">5 días</button>
-            </div>
-          </div>
-          <div class="preset-group">
-            <div class="preset-group-label">Semanas</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,604800)">1 semana</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,1209600)">2 semanas</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,1814400)">3 semanas</button>
-            </div>
-          </div>
-          <div class="preset-group">
-            <div class="preset-group-label">Meses</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,2592000)">1 mes</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,5184000)">2 meses</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,7776000)">3 meses</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,15552000)">6 meses</button>
-            </div>
-          </div>
-          <div class="preset-group">
-            <div class="preset-group-label">Largo plazo</div>
-            <div class="preset-row">
-              <button class="btn-preset" onclick="selectPreset('add',this,31536000)">1 año</button>
-              <button class="btn-preset selected" onclick="selectPreset('add',this,0)">♾️ Permanente</button>
-              <button class="btn-preset" onclick="selectPreset('add',this,-1)">📅 Fecha exacta</button>
-            </div>
-          </div>
-          <div class="custom-date-wrap" id="add-custom-date">
-            <label>Fecha exacta:</label>
-            <input id="new-expires" type="date" />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="expires-preview" id="add-expires-preview">♾️ Sin fecha de expiración — acceso permanente</div>
-    <button class="btn btn-primary" onclick="addUser()" style="width:100%;">+ Agregar usuario</button>
-    <div id="add-msg" style="display:none;"></div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">Usuarios registrados</div>
-    <div class="search-bar">
-      <input id="search-input" placeholder="Buscar por username..." oninput="filterUsers()" />
-      <select id="filter-status" onchange="filterUsers()" style="width:auto;min-width:130px;">
-        <option value="all">Todos</option>
-        <option value="active">Activos</option>
-        <option value="paused">Pausados</option>
-        <option value="banned">Baneados</option>
-        <option value="expired">Expirados</option>
-      </select>
-    </div>
-    <div class="table-wrap">
-      <div id="user-table-container"><div class="empty">Cargando...</div></div>
-    </div>
-  </div>
-</div>
+  </div><!-- /page-whitelist -->
 
-<!-- MODAL EDITAR -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  PAGE: JMODS USERS                                        -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div id="page-jmods" class="page-content">
+
+    <div class="stats jmods-stats">
+      <div class="stat"><div class="stat-label">Total JMods</div><div class="stat-value" style="color:#c084fc" id="jstat-total">—</div></div>
+      <div class="stat"><div class="stat-label">Owners</div><div class="stat-value" style="color:#c084fc" id="jstat-owners">—</div></div>
+      <div class="stat"><div class="stat-label">Admins</div><div class="stat-value" style="color:#7eb8f7" id="jstat-admins">—</div></div>
+      <div class="stat"><div class="stat-label">Followers</div><div class="stat-value" style="color:#6ee7b7" id="jstat-followers">—</div></div>
+    </div>
+
+    <div class="card jmods-card">
+      <div class="card-title">👑 Agregar usuario JMods</div>
+      <p style="font-size:12px;color:#555;margin-bottom:14px;">
+        Estos usuarios pueden usar el <strong style="color:#c084fc">script de administración de Roblox</strong>.
+        Completamente separado de la whitelist de scripts.
+        El HWID y UserId deben coincidir exactamente para que el script valide el acceso.
+      </p>
+      <div class="form-grid">
+        <input id="jnew-username" placeholder="Username de Roblox" />
+        <input id="jnew-userid" placeholder="UserId (número)" type="number" />
+      </div>
+      <div class="form-full">
+        <input id="jnew-hwid" placeholder="HWID del usuario" />
+        <p class="hint">⚠️ El HWID debe coincidir exactamente con el que reporta el script Lua</p>
+      </div>
+      <div class="form-full">
+        <input id="jnew-notes" placeholder="Notas (opcional) — ej: amigo, compró acceso, etc." />
+      </div>
+      <hr class="section-divider">
+      <div class="form-full">
+        <p class="hint" style="margin-bottom:8px;">Rol en el sistema JMods</p>
+        <div class="role-select-wrap" id="jnew-role-wrap">
+          <button class="role-btn" onclick="selectRole('jnew','owner',this)">👑 Owner</button>
+          <button class="role-btn selected-admin" onclick="selectRole('jnew','admin',this)">🛡️ Admin</button>
+          <button class="role-btn" onclick="selectRole('jnew','follower',this)">👤 Follower</button>
+        </div>
+        <input type="hidden" id="jnew-role" value="admin" />
+        <div class="role-desc-box" id="jnew-role-desc">🛡️ <strong style="color:#7eb8f7">Admin</strong> — puede ejecutar comandos sobre followers y recibir comandos de owners.</div>
+      </div>
+      <button class="btn btn-purple" onclick="addJmodsUser()" style="width:100%;margin-top:4px;">+ Agregar usuario JMods</button>
+      <div id="jadd-msg" style="display:none;"></div>
+    </div>
+
+    <div class="card jmods-card">
+      <div class="card-title">Usuarios JMods registrados</div>
+      <div class="search-bar">
+        <input id="jsearch-input" placeholder="Buscar por username..." oninput="filterJmodsUsers()" />
+        <select id="jfilter-role" onchange="filterJmodsUsers()" style="width:auto;min-width:140px;">
+          <option value="all">Todos los roles</option>
+          <option value="owner">Owners</option>
+          <option value="admin">Admins</option>
+          <option value="follower">Followers</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <div id="jmods-table-container"><div class="empty">Cargando...</div></div>
+      </div>
+    </div>
+
+  </div><!-- /page-jmods -->
+
+</div><!-- /panel -->
+
+<!-- ── MODAL EDITAR WHITELIST ── -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-header">
@@ -334,43 +445,9 @@
         <option value="Adopt Me!" data-pid="920587237">Adopt Me!</option>
         <option value="Tower of Hell" data-pid="1962086868">Tower of Hell</option>
         <option value="Murder Mystery 2" data-pid="142823291">Murder Mystery 2</option>
-        <option value="MeepCity" data-pid="370731277">MeepCity</option>
         <option value="Jailbreak" data-pid="606849621">Jailbreak</option>
         <option value="Piggy" data-pid="4623386862">Piggy</option>
         <option value="BedWars" data-pid="6872265039">BedWars</option>
-        <option value="Pet Simulator X" data-pid="6284583030">Pet Simulator X</option>
-        <option value="Royale High" data-pid="735030788">Royale High</option>
-        <option value="Welcome to Bloxburg" data-pid="185655149">Welcome to Bloxburg</option>
-        <option value="Arsenal" data-pid="286090429">Arsenal</option>
-        <option value="Work at a Pizza Place" data-pid="192800">Work at a Pizza Place</option>
-        <option value="Natural Disaster Survival" data-pid="189707">Natural Disaster Survival</option>
-        <option value="Evade" data-pid="9872472334">Evade</option>
-        <option value="Doors" data-pid="6516141723">Doors</option>
-        <option value="Rainbow Friends" data-pid="7991339063">Rainbow Friends</option>
-        <option value="Slap Battles" data-pid="6403373529">Slap Battles</option>
-        <option value="Anime Adventures" data-pid="8304191830">Anime Adventures</option>
-        <option value="King Legacy" data-pid="4520749081">King Legacy</option>
-        <option value="Shindo Life" data-pid="4616652839">Shindo Life</option>
-        <option value="All Star Tower Defense" data-pid="4996049426">All Star Tower Defense</option>
-        <option value="Vehicle Simulator" data-pid="171391948">Vehicle Simulator</option>
-        <option value="SharkBite" data-pid="734159876">SharkBite</option>
-        <option value="Speed Run 4" data-pid="183364845">Speed Run 4</option>
-        <option value="Hide and Seek Extreme" data-pid="205224386">Hide and Seek Extreme</option>
-        <option value="Epic Minigames" data-pid="277751860">Epic Minigames</option>
-        <option value="Flood Escape 2" data-pid="738339342">Flood Escape 2</option>
-        <option value="Theme Park Tycoon 2" data-pid="69184822">Theme Park Tycoon 2</option>
-        <option value="Build A Boat For Treasure" data-pid="537413528">Build A Boat For Treasure</option>
-        <option value="Super Bomb Survival" data-pid="260855499">Super Bomb Survival</option>
-        <option value="Zombie Attack" data-pid="1240123653">Zombie Attack</option>
-        <option value="Mad City" data-pid="1224212277">Mad City</option>
-        <option value="The Mimic" data-pid="6243699076">The Mimic</option>
-        <option value="Break In (Story)" data-pid="3851622790">Break In (Story)</option>
-        <option value="Breaking Point" data-pid="648362523">Breaking Point</option>
-        <option value="Tower Defense Simulator" data-pid="3260590327">Tower Defense Simulator</option>
-        <option value="Bee Swarm Simulator" data-pid="1537690962">Bee Swarm Simulator</option>
-        <option value="Mining Simulator" data-pid="2052243865">Mining Simulator</option>
-        <option value="Ninja Legends" data-pid="3956818381">Ninja Legends</option>
-        <option value="Muscle Legends" data-pid="3623096087">Muscle Legends</option>
         <option value="Da Hood" data-pid="2788229376">Da Hood</option>
         <option value="Grow a Garden" data-pid="126884695634066">Grow a Garden</option>
         <option value="Fisch" data-pid="16732694052">Fisch</option>
@@ -378,24 +455,12 @@
         <option value="The Strongest Battlegrounds" data-pid="10449761463">The Strongest Battlegrounds</option>
         <option value="Pet Simulator 99" data-pid="8737899170">Pet Simulator 99</option>
         <option value="Blade Ball" data-pid="13772394625">Blade Ball</option>
-        <option value="Funky Friday" data-pid="6447798030">Funky Friday</option>
-        <option value="A Dusty Trip" data-pid="16389395869">A Dusty Trip</option>
-        <option value="Dandy's World" data-pid="16116270224">Dandy's World</option>
         <option value="Sol's RNG" data-pid="15532962292">Sol's RNG</option>
         <option value="Anime Vanguards" data-pid="16146832113">Anime Vanguards</option>
         <option value="Toilet Tower Defense" data-pid="13775256536">Toilet Tower Defense</option>
         <option value="Jujutsu Shenanigans" data-pid="9391468976">Jujutsu Shenanigans</option>
-        <option value="Steal a Brainrot" data-pid="109983668079237">Steal a Brainrot</option>
-        <option value="99 Nights in the Forest" data-pid="79546208627805">99 Nights in the Forest</option>
         <option value="Dead Rails" data-pid="116495829188952">Dead Rails</option>
-        <option value="Anime Fighting Simulator" data-pid="6897345392">Anime Fighting Simulator</option>
         <option value="Combat Warriors" data-pid="6923184197">Combat Warriors</option>
-        <option value="Restaurant Tycoon 2" data-pid="2483212155">Restaurant Tycoon 2</option>
-        <option value="Driving Empire" data-pid="1990346660">Driving Empire</option>
-        <option value="Anime Dimensions Simulator" data-pid="6933774673">Anime Dimensions Simulator</option>
-        <option value="Pls Donate" data-pid="8465852169">Pls Donate</option>
-        <option value="Berry Avenue" data-pid="7867483439">Berry Avenue</option>
-        <option value="Fruit Battlegrounds" data-pid="11827534733">Fruit Battlegrounds</option>
         <option value="Grand Piece Online" data-pid="8929174468">Grand Piece Online</option>
         <option value="Peroxide" data-pid="13871814407">Peroxide</option>
         <option value="Type Soul" data-pid="11535519583">Type Soul</option>
@@ -498,29 +563,106 @@
   </div>
 </div>
 
+<!-- ── MODAL EDITAR JMODS USER ── -->
+<div class="modal-overlay" id="jedit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>✏️ Editar usuario JMods</h2>
+      <button class="modal-close" onclick="closeJModal()">×</button>
+    </div>
+    <div class="modal-user-info">
+      <div class="username" id="jmodal-username">—</div>
+      <div class="uid" id="jmodal-uid">—</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Username</div>
+      <input id="jedit-username" placeholder="Username de Roblox" />
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">HWID</div>
+      <input id="jedit-hwid" placeholder="HWID del usuario" />
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Rol</div>
+      <div class="role-select-wrap" id="jedit-role-wrap">
+        <button class="role-btn" onclick="selectRole('jedit','owner',this)">👑 Owner</button>
+        <button class="role-btn" onclick="selectRole('jedit','admin',this)">🛡️ Admin</button>
+        <button class="role-btn" onclick="selectRole('jedit','follower',this)">👤 Follower</button>
+      </div>
+      <input type="hidden" id="jedit-role" value="admin" />
+      <div class="role-desc-box" id="jedit-role-desc"></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Notas</div>
+      <input id="jedit-notes" placeholder="Notas..." />
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Estado</div>
+      <select id="jedit-active">
+        <option value="true">Activo</option>
+        <option value="false">Inactivo</option>
+      </select>
+    </div>
+    <input type="hidden" id="jedit-id" />
+    <div class="modal-footer">
+      <button class="btn btn-neutral" onclick="closeJModal()">Cancelar</button>
+      <button class="btn btn-purple" onclick="saveJEdit()">✓ Guardar cambios</button>
+    </div>
+    <div id="jedit-msg" style="display:none;margin-top:8px;"></div>
+  </div>
+</div>
+
 <script>
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
 let adminPassword = ''
 let users = []
+let jmodsUsers = []
 let addSeconds = 0
 let editSeconds = -2
 
+// ══════════════════════════════════════════════
+// PAGE TABS
+// ══════════════════════════════════════════════
+function switchPage(page) {
+    document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'))
+    document.querySelectorAll('.page-content').forEach(c => c.classList.remove('active'))
+    document.querySelector('.tab-' + page).classList.add('active')
+    document.getElementById('page-' + page).classList.add('active')
+    if (page === 'jmods' && jmodsUsers.length === 0) fetchJmodsUsers()
+}
+
+// ══════════════════════════════════════════════
+// ROLE SELECTOR
+// ══════════════════════════════════════════════
+const roleDescs = {
+    owner:    '👑 <strong style="color:#c084fc">Owner</strong> — acceso total. Puede comandar a admins y followers. Sin restricciones.',
+    admin:    '🛡️ <strong style="color:#7eb8f7">Admin</strong> — puede ejecutar comandos sobre followers y recibir comandos de owners.',
+    follower: '👤 <strong style="color:#6ee7b7">Follower</strong> — recibe y ejecuta comandos de owners y admins.'
+}
+function selectRole(ctx, role, btn) {
+    document.getElementById(ctx + '-role-wrap').querySelectorAll('.role-btn').forEach(b =>
+        b.classList.remove('selected-owner','selected-admin','selected-follower')
+    )
+    btn.classList.add('selected-' + role)
+    document.getElementById(ctx + '-role').value = role
+    document.getElementById(ctx + '-role-desc').innerHTML = roleDescs[role] || ''
+}
+
+// ══════════════════════════════════════════════
+// UTILS — WHITELIST
+// ══════════════════════════════════════════════
 function autoFillPlaceId(ctx) {
-    const selectId = ctx === 'new' ? 'new-script' : 'edit-script'
-    const placeId  = ctx === 'new' ? 'new-placeid' : 'edit-placeid'
-    const select   = document.getElementById(selectId)
-    const opt      = select.options[select.selectedIndex]
-    const pid      = opt.getAttribute('data-pid')
-    if (pid !== null) document.getElementById(placeId).value = pid
+    const sel = document.getElementById(ctx === 'new' ? 'new-script' : 'edit-script')
+    const pid = sel.options[sel.selectedIndex].getAttribute('data-pid')
+    if (pid !== null) document.getElementById(ctx === 'new' ? 'new-placeid' : 'edit-placeid').value = pid
 }
-
 function toggleDD(id) {
-    const dd      = document.getElementById(id)
-    const trigger = dd.querySelector('.duration-trigger')
-    const panel   = dd.querySelector('.duration-panel')
-    trigger.classList.toggle('open')
-    panel.classList.toggle('open')
+    const dd = document.getElementById(id)
+    dd.querySelector('.duration-trigger').classList.toggle('open')
+    dd.querySelector('.duration-panel').classList.toggle('open')
 }
-
 document.addEventListener('click', function(e) {
     document.querySelectorAll('.duration-dropdown').forEach(dd => {
         if (!dd.contains(e.target)) {
@@ -529,55 +671,46 @@ document.addEventListener('click', function(e) {
         }
     })
 })
-
 function selectPreset(ctx, btn, seconds) {
-    const panel = document.getElementById(ctx + '-dd-panel')
-    panel.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('selected'))
+    document.getElementById(ctx + '-dd-panel').querySelectorAll('.btn-preset').forEach(b => b.classList.remove('selected'))
     btn.classList.add('selected')
     const label   = document.getElementById(ctx + '-duration-label')
     const preview = document.getElementById(ctx + '-expires-preview')
     const custom  = document.getElementById(ctx + '-custom-date')
-    if (ctx === 'add') addSeconds = seconds
-    else editSeconds = seconds
+    if (ctx === 'add') addSeconds = seconds; else editSeconds = seconds
     if (seconds === -2) {
-        custom.style.display = 'none'
-        label.textContent = '🔒 Sin cambios'
-        preview.innerHTML = 'Sin cambios en la duración actual'
-        preview.style.color = '#666'
+        custom.style.display = 'none'; label.textContent = '🔒 Sin cambios'
+        preview.innerHTML = 'Sin cambios en la duración actual'; preview.style.color = '#666'
     } else if (seconds === -1) {
-        custom.style.display = 'block'
-        label.textContent = '📅 Fecha exacta'
-        preview.textContent = 'Selecciona una fecha'
-        preview.style.color = '#666'
+        custom.style.display = 'block'; label.textContent = '📅 Fecha exacta'
+        preview.textContent = 'Selecciona una fecha'; preview.style.color = '#666'
     } else if (seconds === 0) {
-        custom.style.display = 'none'
-        label.textContent = '♾️ Permanente'
-        preview.innerHTML = '♾️ Sin fecha de expiración — acceso permanente'
-        preview.style.color = '#40c070'
+        custom.style.display = 'none'; label.textContent = '♾️ Permanente'
+        preview.innerHTML = '♾️ Sin fecha de expiración — acceso permanente'; preview.style.color = '#40c070'
     } else {
         custom.style.display = 'none'
         const exp = new Date(Date.now() + seconds * 1000)
-        const str = exp.toLocaleString('es', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' })
+        const str = exp.toLocaleString('es', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
         label.textContent = btn.textContent
-        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`
-        preview.style.color = '#666'
+        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color = '#666'
     }
     document.getElementById(ctx + '-dd').querySelector('.duration-trigger').classList.remove('open')
     document.getElementById(ctx + '-dd-panel').classList.remove('open')
 }
-
 function getExpiresFor(ctx) {
     const sec = ctx === 'add' ? addSeconds : editSeconds
     if (sec === -2) return null
     if (sec === 0)  return 0
     if (sec === -1) {
-        const id  = ctx === 'add' ? 'new-expires' : 'edit-expires-date'
-        const val = document.getElementById(id).value
+        const val = document.getElementById(ctx === 'add' ? 'new-expires' : 'edit-expires-date').value
         return val ? Math.floor(new Date(val).getTime() / 1000) : 0
     }
     return Math.floor(Date.now() / 1000) + sec
 }
 
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
 async function login() {
     const pw = document.getElementById('password-input').value.trim()
     if (!pw) return
@@ -593,214 +726,238 @@ async function login() {
         adminPassword = ''
     }
 }
-
 function logout() {
     adminPassword = ''
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('panel').style.display = 'none'
     document.getElementById('password-input').value = ''
 }
+document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') login() })
+function refreshAll() { fetchUsers(); if (jmodsUsers.length > 0) fetchJmodsUsers() }
 
-document.getElementById('password-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') login()
-})
-
+// ══════════════════════════════════════════════
+// WHITELIST — API
+// ══════════════════════════════════════════════
 async function fetchUsers() {
     try {
         const res = await fetch('/api/admin', { headers: { 'x-admin-password': adminPassword } })
         if (res.status === 403) return false
         const data = await res.json()
         users = data.users || []
-        renderTable(users)
-        updateStats()
+        renderTable(users); updateStats()
         return true
     } catch { return false }
 }
-
 function updateStats() {
-    const now     = Date.now() / 1000
-    const banned  = users.filter(u => u.banned).length
-    const paused  = users.filter(u => !u.active && !u.banned).length
-    const expired = users.filter(u => !u.banned && u.active && u.expires !== 0 && now > u.expires).length
-    const active  = users.filter(u => u.active && !u.banned && (u.expires === 0 || now <= u.expires)).length
+    const now    = Date.now() / 1000
+    const banned = users.filter(u => u.banned).length
+    const paused = users.filter(u => !u.active && !u.banned).length
+    const expired= users.filter(u => !u.banned && u.active && u.expires !== 0 && now > u.expires).length
+    const active = users.filter(u => u.active && !u.banned && (u.expires === 0 || now <= u.expires)).length
     document.getElementById('stat-total').textContent  = users.length
     document.getElementById('stat-active').textContent = active
     document.getElementById('stat-paused').textContent = paused + expired
     document.getElementById('stat-banned').textContent = banned
 }
-
 function getStatus(u) {
     if (u.banned) return 'banned'
     if (!u.active) return 'paused'
-    if (u.expires !== 0 && Date.now() / 1000 > u.expires) return 'expired'
+    if (u.expires !== 0 && Date.now()/1000 > u.expires) return 'expired'
     return 'active'
 }
-
 function formatExpires(ts) {
     if (!ts || ts === 0) return '<span style="color:#555;font-size:12px;">♾️ Permanente</span>'
-    const now  = Date.now() / 1000
-    const diff = ts - now
-    const date = new Date(ts * 1000)
+    const now = Date.now()/1000, diff = ts - now, date = new Date(ts*1000)
     if (now > ts) return `<span style="color:#f07070;font-size:12px;">⚠️ Expiró</span><br><span style="font-size:11px;color:#555">${date.toLocaleString('es')}</span>`
-    let timeLeft = diff < 60 ? Math.ceil(diff)+'s' : diff < 3600 ? Math.ceil(diff/60)+' min' : diff < 86400 ? (diff/3600).toFixed(1)+'h' : Math.ceil(diff/86400)+'d'
-    const color = diff < 3600 ? '#f07070' : diff < 86400 ? '#f0a030' : '#666'
-    return `<span style="color:${color};font-size:12px;font-weight:500;">${timeLeft}</span><br><span style="font-size:11px;color:#444">${date.toLocaleString('es')}</span>`
+    let tl = diff<60?Math.ceil(diff)+'s':diff<3600?Math.ceil(diff/60)+' min':diff<86400?(diff/3600).toFixed(1)+'h':Math.ceil(diff/86400)+'d'
+    const col = diff<3600?'#f07070':diff<86400?'#f0a030':'#666'
+    return `<span style="color:${col};font-size:12px;font-weight:500;">${tl}</span><br><span style="font-size:11px;color:#444">${date.toLocaleString('es')}</span>`
 }
-
 function formatPlaceId(pid) {
     if (!pid || pid === 0) return '<span style="color:#555;font-size:12px;">Todos</span>'
     return `<a href="https://www.roblox.com/games/${pid}" target="_blank" style="color:#7eb8f7;text-decoration:none;font-size:12px;">${pid}</a>`
 }
-
 function copyHWID(hwid, btn) {
-    navigator.clipboard.writeText(hwid).catch(() => {
-        const ta = document.createElement('textarea')
-        ta.value = hwid; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta)
-    })
-    btn.textContent = '✓ Copiado'; btn.classList.add('copied')
-    setTimeout(() => { btn.textContent = 'Copiar HWID'; btn.classList.remove('copied') }, 2000)
+    navigator.clipboard.writeText(hwid).catch(()=>{const ta=document.createElement('textarea');ta.value=hwid;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)})
+    btn.textContent='✓ Copiado';btn.classList.add('copied')
+    setTimeout(()=>{btn.textContent='Copiar HWID';btn.classList.remove('copied')},2000)
 }
-
 function filterUsers() {
-    const search = document.getElementById('search-input').value.toLowerCase()
-    const status = document.getElementById('filter-status').value
-    renderTable(users.filter(u => u.username.toLowerCase().includes(search) && (status === 'all' || getStatus(u) === status)))
+    const s = document.getElementById('search-input').value.toLowerCase()
+    const st = document.getElementById('filter-status').value
+    renderTable(users.filter(u => u.username.toLowerCase().includes(s) && (st==='all'||getStatus(u)===st)))
 }
-
 function renderTable(list) {
-    const container = document.getElementById('user-table-container')
-    if (!list || list.length === 0) { container.innerHTML = '<div class="empty">No hay usuarios</div>'; return }
+    const c = document.getElementById('user-table-container')
+    if (!list||list.length===0){c.innerHTML='<div class="empty">No hay usuarios</div>';return}
     const rows = list.map(u => {
         const status = getStatus(u)
-        const statusBadge = { active:'<span class="badge badge-active">Activo</span>', banned:'<span class="badge badge-banned">Baneado</span>', paused:'<span class="badge badge-paused">Pausado</span>', expired:'<span class="badge badge-expired">Expirado</span>' }[status]
-        const scriptBadge = u.script_name === 'global' ? '<span class="badge badge-global">global</span>' : `<span class="badge badge-script">${u.script_name}</span>`
-        const pauseBtn = u.active ? `<button class="btn btn-warning btn-sm" onclick="toggleActive('${u.id}',false)">Pausar</button>` : `<button class="btn btn-success btn-sm" onclick="toggleActive('${u.id}',true)">Activar</button>`
-        const banBtn   = u.banned ? `<button class="btn btn-neutral btn-sm" onclick="toggleBan('${u.id}',false)">Desbanear</button>` : `<button class="btn btn-danger btn-sm" onclick="toggleBan('${u.id}',true)">Banear</button>`
-        const rowClass = u.banned ? 'banned' : (!u.active || status === 'expired' ? 'paused' : '')
-        const notes    = u.notes ? `<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>` : ''
-        const safeHwid = u.hwid ? u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'") : ''
-        const hwidCell = u.hwid ? `<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${safeHwid}',this)">Copiar HWID</button></div>` : '<span style="color:#444;font-size:12px;">—</span>'
-        return `<tr class="${rowClass}">
-            <td><div style="font-weight:500;">${u.username}</div>${notes}</td>
-            <td style="color:#666;font-size:12px;">${u.user_id}</td>
-            <td>${hwidCell}</td>
-            <td>${scriptBadge}</td>
-            <td>${formatPlaceId(u.place_id)}</td>
-            <td>${formatExpires(u.expires)}</td>
-            <td>${statusBadge}</td>
-            <td><div class="actions">
-                <button class="btn btn-edit btn-sm" onclick="openEdit('${u.id}')">✏️ Editar</button>
-                ${pauseBtn}${banBtn}
-                <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Borrar</button>
-            </div></td>
-        </tr>`
+        const sb = {active:'<span class="badge badge-active">Activo</span>',banned:'<span class="badge badge-banned">Baneado</span>',paused:'<span class="badge badge-paused">Pausado</span>',expired:'<span class="badge badge-expired">Expirado</span>'}[status]
+        const scb = u.script_name==='global'?'<span class="badge badge-global">global</span>':`<span class="badge badge-script">${u.script_name}</span>`
+        const pb = u.active?`<button class="btn btn-warning btn-sm" onclick="toggleActive('${u.id}',false)">Pausar</button>`:`<button class="btn btn-success btn-sm" onclick="toggleActive('${u.id}',true)">Activar</button>`
+        const bb = u.banned?`<button class="btn btn-neutral btn-sm" onclick="toggleBan('${u.id}',false)">Desbanear</button>`:`<button class="btn btn-danger btn-sm" onclick="toggleBan('${u.id}',true)">Banear</button>`
+        const rc = u.banned?'banned':(!u.active||status==='expired'?'paused':'')
+        const nt = u.notes?`<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>`:''
+        const sh = u.hwid?u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):''
+        const hc = u.hwid?`<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${sh}',this)">Copiar HWID</button></div>`:'<span style="color:#444;font-size:12px;">—</span>'
+        return `<tr class="${rc}"><td><div style="font-weight:500;">${u.username}</div>${nt}</td><td style="color:#666;font-size:12px;">${u.user_id}</td><td>${hc}</td><td>${scb}</td><td>${formatPlaceId(u.place_id)}</td><td>${formatExpires(u.expires)}</td><td>${sb}</td><td><div class="actions"><button class="btn btn-edit btn-sm" onclick="openEdit('${u.id}')">✏️ Editar</button>${pb}${bb}<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Borrar</button></div></td></tr>`
     }).join('')
-    container.innerHTML = `<table><thead><tr>
-        <th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th>
-        <th>Juego</th><th>Expira</th><th>Estado</th>
-        <th style="text-align:right;">Acciones</th>
-    </tr></thead><tbody>${rows}</tbody></table>`
+    c.innerHTML = `<table><thead><tr><th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th><th>Juego</th><th>Expira</th><th>Estado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>${rows}</tbody></table>`
 }
-
 function openEdit(id) {
-    const u = users.find(u => u.id === id)
-    if (!u) return
-    document.getElementById('edit-id').value      = u.id
-    document.getElementById('modal-username').textContent = u.username
-    document.getElementById('modal-uid').textContent      = 'UserId: ' + u.user_id
-    document.getElementById('edit-script').value  = u.script_name || 'global'
-    document.getElementById('edit-placeid').value = u.place_id || 0
-    document.getElementById('edit-notes').value   = u.notes || ''
-    document.getElementById('edit-active').value  = u.active ? 'true' : 'false'
-    editSeconds = -2
-    document.getElementById('edit-duration-label').textContent = '🔒 Sin cambios'
-    document.getElementById('edit-expires-preview').innerHTML = 'Sin cambios en la duración actual'
-    document.getElementById('edit-expires-preview').style.color = '#666'
-    document.getElementById('edit-custom-date').style.display = 'none'
-    document.querySelectorAll('#edit-dd-panel .btn-preset').forEach(b => b.classList.remove('selected'))
+    const u = users.find(u=>u.id===id); if(!u) return
+    document.getElementById('edit-id').value=u.id
+    document.getElementById('modal-username').textContent=u.username
+    document.getElementById('modal-uid').textContent='UserId: '+u.user_id
+    document.getElementById('edit-script').value=u.script_name||'global'
+    document.getElementById('edit-placeid').value=u.place_id||0
+    document.getElementById('edit-notes').value=u.notes||''
+    document.getElementById('edit-active').value=u.active?'true':'false'
+    editSeconds=-2
+    document.getElementById('edit-duration-label').textContent='🔒 Sin cambios'
+    document.getElementById('edit-expires-preview').innerHTML='Sin cambios en la duración actual'
+    document.getElementById('edit-expires-preview').style.color='#666'
+    document.getElementById('edit-custom-date').style.display='none'
+    document.querySelectorAll('#edit-dd-panel .btn-preset').forEach(b=>b.classList.remove('selected'))
     document.querySelector('#edit-dd-panel .btn-preset[onclick*="-2"]').classList.add('selected')
-    document.getElementById('edit-msg').style.display = 'none'
+    document.getElementById('edit-msg').style.display='none'
     document.getElementById('edit-modal').classList.add('open')
 }
-
-function closeModal() {
-    document.getElementById('edit-modal').classList.remove('open')
-}
-
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal()
-})
-
+function closeModal(){document.getElementById('edit-modal').classList.remove('open')}
+document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeModal()})
 async function saveEdit() {
-    const id          = document.getElementById('edit-id').value
-    const script_name = document.getElementById('edit-script').value
-    const place_id    = parseInt(document.getElementById('edit-placeid').value) || 0
-    const notes       = document.getElementById('edit-notes').value.trim()
-    const active      = document.getElementById('edit-active').value === 'true'
-    const msgEl       = document.getElementById('edit-msg')
-    const updates     = { id, script_name, place_id, notes, active }
-    const expires     = getExpiresFor('edit')
-    if (expires !== null) updates.expires = expires
-    const res  = await fetch('/api/admin', { method:'PATCH', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify(updates) })
-    const data = await res.json()
-    if (data.success) {
-        msgEl.className = 'msg msg-success'; msgEl.textContent = '✓ Cambios guardados'; msgEl.style.display = 'block'
-        fetchUsers()
-        setTimeout(() => closeModal(), 1500)
-    } else {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido'); msgEl.style.display = 'block'
-    }
+    const id=document.getElementById('edit-id').value
+    const updates={id,script_name:document.getElementById('edit-script').value,place_id:parseInt(document.getElementById('edit-placeid').value)||0,notes:document.getElementById('edit-notes').value.trim(),active:document.getElementById('edit-active').value==='true'}
+    const expires=getExpiresFor('edit'); if(expires!==null) updates.expires=expires
+    const res=await fetch('/api/admin',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify(updates)})
+    const data=await res.json()
+    const msgEl=document.getElementById('edit-msg')
+    if(data.success){msgEl.className='msg msg-success';msgEl.textContent='✓ Cambios guardados';msgEl.style.display='block';fetchUsers();setTimeout(()=>closeModal(),1500)}
+    else{msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
 }
-
 async function addUser() {
-    const username    = document.getElementById('new-username').value.trim()
-    const user_id     = document.getElementById('new-userid').value.trim()
-    const hwid        = document.getElementById('new-hwid').value.trim()
-    const script_name = document.getElementById('new-script').value
-    const place_id    = document.getElementById('new-placeid').value.trim()
-    const notes       = document.getElementById('new-notes').value.trim()
-    const msgEl       = document.getElementById('add-msg')
-    if (!username || !user_id || !hwid) {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena username, UserId y HWID'; msgEl.style.display = 'block'; return
-    }
-    const expires = getExpiresFor('add')
-    const res  = await fetch('/api/admin', { method:'POST', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({ username, user_id, hwid, script_name, expires: expires ?? 0, notes, place_id: place_id ? parseInt(place_id) : 0 }) })
-    const data = await res.json()
-    if (data.success) {
-        msgEl.className = 'msg msg-success'; msgEl.textContent = '✓ Usuario agregado'; msgEl.style.display = 'block'
-        document.getElementById('new-username').value = ''
-        document.getElementById('new-userid').value   = ''
-        document.getElementById('new-hwid').value     = ''
-        document.getElementById('new-placeid').value  = '0'
-        document.getElementById('new-notes').value    = ''
-        addSeconds = 0
-        document.getElementById('add-duration-label').textContent = '♾️ Permanente'
-        document.getElementById('add-expires-preview').innerHTML = '♾️ Sin fecha de expiración — acceso permanente'
-        document.getElementById('add-expires-preview').style.color = '#40c070'
-        document.querySelectorAll('#add-dd-panel .btn-preset').forEach(b => b.classList.remove('selected'))
+    const username=document.getElementById('new-username').value.trim()
+    const user_id=document.getElementById('new-userid').value.trim()
+    const hwid=document.getElementById('new-hwid').value.trim()
+    const script_name=document.getElementById('new-script').value
+    const place_id=document.getElementById('new-placeid').value.trim()
+    const notes=document.getElementById('new-notes').value.trim()
+    const msgEl=document.getElementById('add-msg')
+    if(!username||!user_id||!hwid){msgEl.className='msg msg-error';msgEl.textContent='Rellena username, UserId y HWID';msgEl.style.display='block';return}
+    const expires=getExpiresFor('add')
+    const res=await fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({username,user_id,hwid,script_name,expires:expires??0,notes,place_id:place_id?parseInt(place_id):0})})
+    const data=await res.json()
+    if(data.success){
+        msgEl.className='msg msg-success';msgEl.textContent='✓ Usuario agregado';msgEl.style.display='block'
+        document.getElementById('new-username').value=''
+        document.getElementById('new-userid').value=''
+        document.getElementById('new-hwid').value=''
+        document.getElementById('new-placeid').value='0'
+        document.getElementById('new-notes').value=''
+        addSeconds=0
+        document.getElementById('add-duration-label').textContent='♾️ Permanente'
+        document.getElementById('add-expires-preview').innerHTML='♾️ Sin fecha de expiración — acceso permanente'
+        document.getElementById('add-expires-preview').style.color='#40c070'
+        document.querySelectorAll('#add-dd-panel .btn-preset').forEach(b=>b.classList.remove('selected'))
         document.querySelector('#add-dd-panel .btn-preset[onclick*="this,0"]').classList.add('selected')
-        fetchUsers()
-        setTimeout(() => msgEl.style.display = 'none', 3000)
-    } else {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido'); msgEl.style.display = 'block'
-    }
+        fetchUsers(); setTimeout(()=>msgEl.style.display='none',3000)
+    } else {msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
 }
+async function toggleActive(id,active){await fetch('/api/admin',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id,active})});fetchUsers()}
+async function toggleBan(id,banned){await fetch('/api/admin',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id,banned})});fetchUsers()}
+async function deleteUser(id){if(!confirm('¿Borrar este usuario permanentemente?'))return;await fetch('/api/admin',{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id})});fetchUsers()}
 
-async function toggleActive(id, active) {
-    await fetch('/api/admin', { method:'PATCH', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({id,active}) })
-    fetchUsers()
+// ══════════════════════════════════════════════
+// JMODS USERS — API
+// ══════════════════════════════════════════════
+async function fetchJmodsUsers() {
+    try {
+        const res = await fetch('/api/jmods_users', { headers: { 'x-admin-password': adminPassword } })
+        if (res.status === 403) return false
+        const data = await res.json()
+        jmodsUsers = data.users || []
+        renderJmodsTable(jmodsUsers); updateJmodsStats()
+        return true
+    } catch { return false }
 }
-
-async function toggleBan(id, banned) {
-    await fetch('/api/admin', { method:'PATCH', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({id,banned}) })
-    fetchUsers()
+function updateJmodsStats() {
+    document.getElementById('jstat-total').textContent    = jmodsUsers.length
+    document.getElementById('jstat-owners').textContent   = jmodsUsers.filter(u=>u.role==='owner').length
+    document.getElementById('jstat-admins').textContent   = jmodsUsers.filter(u=>u.role==='admin').length
+    document.getElementById('jstat-followers').textContent= jmodsUsers.filter(u=>u.role==='follower').length
 }
-
-async function deleteUser(id) {
-    if (!confirm('¿Borrar este usuario permanentemente?')) return
-    await fetch('/api/admin', { method:'DELETE', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({id}) })
-    fetchUsers()
+function filterJmodsUsers() {
+    const s = document.getElementById('jsearch-input').value.toLowerCase()
+    const r = document.getElementById('jfilter-role').value
+    renderJmodsTable(jmodsUsers.filter(u => u.username.toLowerCase().includes(s) && (r==='all'||u.role===r)))
 }
+function renderJmodsTable(list) {
+    const c = document.getElementById('jmods-table-container')
+    if (!list||list.length===0){c.innerHTML='<div class="empty">No hay usuarios JMods registrados</div>';return}
+    const order = {owner:0,admin:1,follower:2}
+    const sorted = [...list].sort((a,b)=>(order[a.role]||9)-(order[b.role]||9))
+    const rows = sorted.map(u => {
+        const rb = {owner:'<span class="badge badge-owner">👑 Owner</span>',admin:'<span class="badge badge-admin">🛡️ Admin</span>',follower:'<span class="badge badge-follower">👤 Follower</span>'}[u.role]||`<span class="badge">${u.role}</span>`
+        const sb = u.active?'<span class="badge badge-active">Activo</span>':'<span class="badge badge-inactive">Inactivo</span>'
+        const sh = u.hwid?u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):''
+        const hc = u.hwid?`<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,14)}...</span><button class="btn-copy" onclick="copyHWID('${sh}',this)">Copiar</button></div>`:'<span style="color:#444;font-size:12px;">—</span>'
+        const nt = u.notes?`<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,30)}${u.notes.length>30?'...':''}</div>`:''
+        const cr = u.created_at?new Date(u.created_at).toLocaleDateString('es'):'—'
+        const tb = u.active?`<button class="btn btn-warning btn-sm" onclick="toggleJmodsActive('${u.id}',false)">Desactivar</button>`:`<button class="btn btn-success btn-sm" onclick="toggleJmodsActive('${u.id}',true)">Activar</button>`
+        return `<tr class="${!u.active?'paused':''}"><td><div style="font-weight:500;">${u.username}</div>${nt}</td><td style="color:#666;font-size:12px;">${u.user_id}</td><td>${hc}</td><td>${rb}</td><td>${sb}</td><td style="color:#555;font-size:12px;">${cr}</td><td><div class="actions"><button class="btn btn-edit btn-sm" onclick="openJEdit('${u.id}')">✏️ Editar</button>${tb}<button class="btn btn-danger btn-sm" onclick="deleteJmodsUser('${u.id}')">Borrar</button></div></td></tr>`
+    }).join('')
+    c.innerHTML = `<table><thead><tr><th>Usuario</th><th>UserId</th><th>HWID</th><th>Rol</th><th>Estado</th><th>Creado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>${rows}</tbody></table>`
+}
+async function addJmodsUser() {
+    const username=document.getElementById('jnew-username').value.trim()
+    const user_id=document.getElementById('jnew-userid').value.trim()
+    const hwid=document.getElementById('jnew-hwid').value.trim()
+    const role=document.getElementById('jnew-role').value
+    const notes=document.getElementById('jnew-notes').value.trim()
+    const msgEl=document.getElementById('jadd-msg')
+    if(!username||!user_id||!hwid){msgEl.className='msg msg-error';msgEl.textContent='Rellena username, UserId y HWID';msgEl.style.display='block';return}
+    const res=await fetch('/api/jmods_users',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({username,user_id,hwid,role,notes})})
+    const data=await res.json()
+    if(data.success){
+        msgEl.className='msg msg-success';msgEl.textContent='✓ Usuario JMods agregado';msgEl.style.display='block'
+        document.getElementById('jnew-username').value=''
+        document.getElementById('jnew-userid').value=''
+        document.getElementById('jnew-hwid').value=''
+        document.getElementById('jnew-notes').value=''
+        fetchJmodsUsers(); setTimeout(()=>msgEl.style.display='none',3000)
+    } else {msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
+}
+function openJEdit(id) {
+    const u = jmodsUsers.find(u=>u.id===id); if(!u) return
+    document.getElementById('jedit-id').value=u.id
+    document.getElementById('jmodal-username').textContent=u.username
+    document.getElementById('jmodal-uid').textContent='UserId: '+u.user_id+' • Rol: '+u.role
+    document.getElementById('jedit-username').value=u.username
+    document.getElementById('jedit-hwid').value=u.hwid||''
+    document.getElementById('jedit-notes').value=u.notes||''
+    document.getElementById('jedit-active').value=u.active?'true':'false'
+    document.getElementById('jedit-role').value=u.role||'follower'
+    document.getElementById('jedit-role-desc').innerHTML=roleDescs[u.role]||''
+    const wrap=document.getElementById('jedit-role-wrap')
+    wrap.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected-owner','selected-admin','selected-follower'))
+    const tb=wrap.querySelector(`[onclick*="'${u.role}'"]`)
+    if(tb) tb.classList.add('selected-'+u.role)
+    document.getElementById('jedit-msg').style.display='none'
+    document.getElementById('jedit-modal').classList.add('open')
+}
+function closeJModal(){document.getElementById('jedit-modal').classList.remove('open')}
+document.getElementById('jedit-modal').addEventListener('click',function(e){if(e.target===this)closeJModal()})
+async function saveJEdit() {
+    const id=document.getElementById('jedit-id').value
+    const updates={id,username:document.getElementById('jedit-username').value.trim(),hwid:document.getElementById('jedit-hwid').value.trim(),role:document.getElementById('jedit-role').value,notes:document.getElementById('jedit-notes').value.trim(),active:document.getElementById('jedit-active').value==='true'}
+    const res=await fetch('/api/jmods_users',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify(updates)})
+    const data=await res.json()
+    const msgEl=document.getElementById('jedit-msg')
+    if(data.success){msgEl.className='msg msg-success';msgEl.textContent='✓ Cambios guardados';msgEl.style.display='block';fetchJmodsUsers();setTimeout(()=>closeJModal(),1500)}
+    else{msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
+}
+async function toggleJmodsActive(id,active){await fetch('/api/jmods_users',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id,active})});fetchJmodsUsers()}
+async function deleteJmodsUser(id){if(!confirm('¿Borrar este usuario JMods permanentemente?'))return;await fetch('/api/jmods_users',{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id})});fetchJmodsUsers()}
 </script>
 </body>
 </html>
