@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const { username, user_id, hwid, role, notes } = req.body
+        const { username, user_id, hwid, role, notes, expires } = req.body
         if (!username || !user_id || !hwid)
             return res.status(400).json({ error: "Faltan datos (username, user_id, hwid)" })
 
@@ -37,7 +37,8 @@ module.exports = async function handler(req, res) {
                 hwid,
                 role: finalRole,
                 active: true,
-                notes: notes || ''
+                notes: notes || '',
+                expires: expires !== undefined ? parseInt(expires) : 0
             }])
             .select()
         if (error) return res.status(500).json({ error: error.message })
@@ -45,13 +46,14 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === "PATCH") {
-        const { id, username, hwid, role, active, notes } = req.body
+        const { id, username, hwid, role, active, notes, expires } = req.body
         const updates = {}
         if (username !== undefined) updates.username = username
         if (hwid     !== undefined) updates.hwid     = hwid
         if (role     !== undefined) updates.role     = role
         if (active   !== undefined) updates.active   = active
         if (notes    !== undefined) updates.notes    = notes
+        if (expires  !== undefined) updates.expires  = expires
 
         const { error } = await supabase
             .from('jmods_users')
