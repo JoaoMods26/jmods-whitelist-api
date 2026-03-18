@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
     const { action } = req.body || req.query
 
-    // ── HEARTBEAT (follower/admin/owner reporta que está vivo) ──
+    // ── HEARTBEAT ──
     if (action === 'heartbeat') {
         const { user_id, username, role, server_id, place_id } = req.body
         const { error } = await supabase
@@ -30,10 +30,10 @@ module.exports = async function handler(req, res) {
         return res.json({ success: true })
     }
 
-    // ── GET HEARTBEATS (owner/admin pide ver quién está online) ──
+    // ── GET HEARTBEATS ──
     if (action === 'get_heartbeats') {
         const { server_id } = req.body
-        const cutoff = new Date(Date.now() - 30000).toISOString() // últimos 30s
+        const cutoff = new Date(Date.now() - 30000).toISOString()
         const { data, error } = await supabase
             .from('jmods_heartbeats')
             .select('*')
@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
         return res.json({ success: true, id: data[0].id })
     }
 
-    // ── LEER COMANDOS PENDIENTES (follower/admin los pide) ──
+    // ── LEER COMANDOS PENDIENTES ──
     if (action === 'get_commands') {
         const { server_id } = req.body
         const cutoff = new Date(Date.now() - 15000).toISOString()
@@ -76,7 +76,7 @@ module.exports = async function handler(req, res) {
         return res.json({ commands: data })
     }
 
-    // ── MARCAR COMANDOS COMO EJECUTADOS ──
+    // ── ACK COMANDOS ──
     if (action === 'ack_commands') {
         const { ids } = req.body
         if (!ids || ids.length === 0) return res.json({ success: true })
@@ -116,7 +116,6 @@ module.exports = async function handler(req, res) {
             .gte('created_at', cutoff)
         if (error) return res.status(500).json({ error: error.message })
 
-        // Filtrar por target del lado server
         const filtered = data.filter(e => {
             return e.target === '.all' ||
                    (e.target === '.s' && e.server_id === server_id) ||
@@ -179,7 +178,7 @@ module.exports = async function handler(req, res) {
         return res.json({ success: true })
     }
 
-    // ── VERIFICAR USUARIO JMODS (el script lua lo llama al inicio) ──
+    // ── VERIFICAR USUARIO ──
     if (action === 'verify_user') {
         const { user_id, hwid } = req.body
         const { data, error } = await supabase
@@ -192,7 +191,21 @@ module.exports = async function handler(req, res) {
             return res.json({ verified: false, reason: "No autorizado" })
         if (data.hwid !== hwid)
             return res.json({ verified: false, reason: "HWID no coincide" })
+        if (data.expires !== 0 && Date.now() / 1000 > data.expires) {
+            await supabase.from('jmods_users').update({ active: false }).eq('id', data.id)
+            return res.json({ verified: false, reason: "Acceso expirado" })
+        }
         return res.json({ verified: true, role: data.role, username: data.username })
+    }
+
+    // ── GET ALL ROLES ──
+    if (action === 'get_all_roles') {
+        const { data, error } = await supabase
+            .from('jmods_users')
+            .select('user_id, role, active')
+            .eq('active', true)
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ users: data })
     }
 
     return res.status(400).json({ error: "Acción no reconocida" })
