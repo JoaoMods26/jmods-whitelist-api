@@ -36,18 +36,9 @@
   .btn-copy { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; padding: 2px 7px; font-size: 11px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
   .btn-copy:hover { background: #222; color: #aaa; }
   .btn-copy.copied { background: #0a2a1a; color: #40c070; border-color: #1a5a30; }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75); z-index: 1000;
-    align-items: center; justify-content: center;
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: #111; border: 1px solid #333; border-radius: 12px;
-    padding: 1.5rem; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
-  }
+  .modal { background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
   .modal-header h2 { font-size: 16px; font-weight: 500; }
   .modal-close { background: none; border: none; color: #666; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
@@ -61,8 +52,6 @@
   .modal-footer .btn { flex: 1; }
   .section-divider { border: none; border-top: 1px solid #1a1a1a; margin: 12px 0; }
   .hint { font-size: 11px; color: #555; margin-top: 4px; }
-
-  /* DURATION DROPDOWN */
   .duration-dropdown { position: relative; margin-bottom: 8px; }
   .duration-trigger { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #e0e0e0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
   .duration-trigger:hover { border-color: #444; }
@@ -80,7 +69,6 @@
   .custom-date-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2a2a; display: none; }
   .custom-date-wrap label { font-size: 11px; color: #666; display: block; margin-bottom: 4px; }
   .expires-preview { font-size: 12px; color: #666; margin-bottom: 8px; padding: 6px 10px; background: #0f0f0f; border-radius: 6px; min-height: 28px; display: flex; align-items: center; }
-
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { padding: 10px 12px; text-align: left; font-weight: 500; color: #666; border-bottom: 1px solid #222; white-space: nowrap; }
   td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
@@ -108,7 +96,6 @@
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <h1>Jmods Panel</h1>
@@ -119,7 +106,6 @@
   </div>
 </div>
 
-<!-- PANEL -->
 <div id="panel">
   <div class="header">
     <div>
@@ -139,7 +125,6 @@
     <div class="stat"><div class="stat-label">Baneados</div><div class="stat-value" style="color:#f07070" id="stat-banned">—</div></div>
   </div>
 
-  <!-- AGREGAR -->
   <div class="card">
     <div class="card-title">Agregar usuario</div>
     <div class="form-grid">
@@ -217,14 +202,12 @@
           <option value="99 Nights in the Forest" data-pid="79546208627805">99 Nights in the Forest</option>
           <option value="Dead Rails" data-pid="116495829188952">Dead Rails</option>
           <option value="Anime Fighting Simulator" data-pid="6897345392">Anime Fighting Simulator</option>
-          <option value="Blox Fruits (Legacy)" data-pid="2753915549">Blox Fruits (Legacy)</option>
           <option value="Combat Warriors" data-pid="6923184197">Combat Warriors</option>
           <option value="Restaurant Tycoon 2" data-pid="2483212155">Restaurant Tycoon 2</option>
           <option value="Driving Empire" data-pid="1990346660">Driving Empire</option>
           <option value="Anime Dimensions Simulator" data-pid="6933774673">Anime Dimensions Simulator</option>
           <option value="Pls Donate" data-pid="8465852169">Pls Donate</option>
           <option value="Berry Avenue" data-pid="7867483439">Berry Avenue</option>
-          <option value="Life Together" data-pid="12345678901">Life Together</option>
           <option value="Fruit Battlegrounds" data-pid="11827534733">Fruit Battlegrounds</option>
           <option value="Grand Piece Online" data-pid="8929174468">Grand Piece Online</option>
           <option value="Peroxide" data-pid="13871814407">Peroxide</option>
@@ -313,40 +296,36 @@
     <div id="add-msg" style="display:none;"></div>
   </div>
 
-  <!-- TABS NAVEGACION -->
   <div style="display:flex;gap:8px;margin-bottom:1rem;">
     <button class="btn btn-primary" id="tab-whitelist" onclick="switchMainTab('whitelist')" style="flex:1;">🔒 Whitelist</button>
     <button class="btn btn-neutral" id="tab-admins" onclick="switchMainTab('admins')" style="flex:1;">👑 Sistema Admin</button>
   </div>
 
-  <!-- SECCION WHITELIST -->
   <div id="section-whitelist">
-  <!-- TABLA -->
-  <div class="card">
-    <div class="card-title">Usuarios registrados</div>
-    <div class="search-bar">
-      <input id="search-input" placeholder="Buscar por username..." oninput="filterUsers()" />
-      <select id="filter-status" onchange="filterUsers()" style="width:auto;min-width:130px;">
-        <option value="all">Todos</option>
-        <option value="active">Activos</option>
-        <option value="paused">Pausados</option>
-        <option value="banned">Baneados</option>
-        <option value="expired">Expirados</option>
-      </select>
+    <div class="card">
+      <div class="card-title">Usuarios registrados</div>
+      <div class="search-bar">
+        <input id="search-input" placeholder="Buscar por username..." oninput="filterUsers()" />
+        <select id="filter-status" onchange="filterUsers()" style="width:auto;min-width:130px;">
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="paused">Pausados</option>
+          <option value="banned">Baneados</option>
+          <option value="expired">Expirados</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <div id="user-table-container"><div class="empty">Cargando...</div></div>
+      </div>
     </div>
-    <div class="table-wrap">
-      <div id="user-table-container"><div class="empty">Cargando...</div></div>
-    </div>
-  </div>
   </div>
 
-  <!-- SECCION SISTEMA ADMIN -->
   <div id="section-admins" style="display:none;">
     <div class="card" style="border-color:#2a3a5c;">
       <div class="card-title" style="color:#7eb8f7;">Como funciona el Sistema Admin</div>
       <p style="font-size:13px;color:#666;line-height:1.6;">Las personas en esta lista tienen rol de <span style="color:#f0a030;">Owner</span> o <span style="color:#7eb8f7;">Admin</span>.<br>Los <strong style="color:#e0e0e0;">seguidores no necesitan estar aqui</strong> — cualquiera que ejecute el script recibe ordenes.<br>Solo los que estan aqui pueden <em>dar</em> ordenes.</p>
     </div>
-  <div class="card">
+    <div class="card">
       <div class="card-title">Agregar Owner / Admin</div>
       <div class="form-grid">
         <input id="as-userid" placeholder="UserId de Roblox" type="number" />
@@ -365,7 +344,6 @@
       </div>
       <div id="as-msg" style="display:none;"></div>
     </div>
-   
     <div class="card">
       <div class="card-title">Owners y Admins registrados</div>
       <div class="table-wrap">
@@ -384,7 +362,6 @@
       </table>
     </div>
   </div>
-
 </div>
 
 <!-- MODAL EDITAR -->
@@ -394,12 +371,10 @@
       <h2>✏️ Editar membresía</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
-
     <div class="modal-user-info">
       <div class="username" id="modal-username">—</div>
       <div class="uid" id="modal-uid">—</div>
     </div>
-
     <div class="modal-section">
       <div class="modal-section-label">Lista de acceso</div>
       <select id="edit-script" onchange="autoFillPlaceId('edit')">
@@ -477,13 +452,11 @@
         <option value="Kaizen" data-pid="10654250308">Kaizen</option>
       </select>
     </div>
-
     <div class="modal-section">
       <div class="modal-section-label">Juego (PlaceId)</div>
       <input id="edit-placeid" type="number" placeholder="0 = todos los juegos" />
       <p class="hint">0 = funciona en todos los juegos</p>
     </div>
-
     <div class="modal-section">
       <div class="modal-section-label">Nueva duración del acceso</div>
       <div class="duration-dropdown" id="edit-dd">
@@ -555,12 +528,10 @@
       </div>
       <div class="expires-preview" id="edit-expires-preview" style="margin-top:8px;">Sin cambios en la duración actual</div>
     </div>
-
     <div class="modal-section">
       <div class="modal-section-label">Notas</div>
       <input id="edit-notes" placeholder="Notas sobre este usuario..." />
     </div>
-
     <div class="modal-section">
       <div class="modal-section-label">Estado</div>
       <select id="edit-active">
@@ -568,9 +539,7 @@
         <option value="false">Pausado</option>
       </select>
     </div>
-
     <input type="hidden" id="edit-id" />
-
     <div class="modal-footer">
       <button class="btn btn-neutral" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-success" onclick="saveEdit()">✓ Guardar cambios</button>
@@ -582,24 +551,21 @@
 <script>
 let adminPassword = ''
 let users = []
+let adminUsers = []
 let addSeconds = 0
-let editSeconds = -2 // -2 = sin cambios
+let editSeconds = -2
 
-// ── AUTO FILL PLACE ID ───────────────────────────
 function autoFillPlaceId(ctx) {
-    const selectId  = ctx === 'new' ? 'new-script'  : 'edit-script'
-    const placeId   = ctx === 'new' ? 'new-placeid' : 'edit-placeid'
-    const select    = document.getElementById(selectId)
-    const opt       = select.options[select.selectedIndex]
-    const pid       = opt.getAttribute('data-pid')
-    if (pid !== null) {
-        document.getElementById(placeId).value = pid
-    }
+    const selectId = ctx === 'new' ? 'new-script' : 'edit-script'
+    const placeId  = ctx === 'new' ? 'new-placeid' : 'edit-placeid'
+    const select   = document.getElementById(selectId)
+    const opt      = select.options[select.selectedIndex]
+    const pid      = opt.getAttribute('data-pid')
+    if (pid !== null) document.getElementById(placeId).value = pid
 }
 
-// ── DROPDOWN ─────────────────────────────────────
 function toggleDD(id) {
-    const dd     = document.getElementById(id)
+    const dd      = document.getElementById(id)
     const trigger = dd.querySelector('.duration-trigger')
     const panel   = dd.querySelector('.duration-panel')
     trigger.classList.toggle('open')
@@ -615,19 +581,15 @@ document.addEventListener('click', function(e) {
     })
 })
 
-// ctx = 'add' | 'edit'
 function selectPreset(ctx, btn, seconds) {
     const panel = document.getElementById(ctx + '-dd-panel')
     panel.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('selected'))
     btn.classList.add('selected')
-
     const label   = document.getElementById(ctx + '-duration-label')
     const preview = document.getElementById(ctx + '-expires-preview')
     const custom  = document.getElementById(ctx + '-custom-date')
-
     if (ctx === 'add') addSeconds = seconds
     else editSeconds = seconds
-
     if (seconds === -2) {
         custom.style.display = 'none'
         label.textContent = '🔒 Sin cambios'
@@ -651,7 +613,6 @@ function selectPreset(ctx, btn, seconds) {
         preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`
         preview.style.color = '#666'
     }
-
     document.getElementById(ctx + '-dd').querySelector('.duration-trigger').classList.remove('open')
     document.getElementById(ctx + '-dd-panel').classList.remove('open')
 }
@@ -668,7 +629,6 @@ function getExpiresFor(ctx) {
     return Math.floor(Date.now() / 1000) + sec
 }
 
-// ── AUTH ─────────────────────────────────────────
 async function login() {
     const pw = document.getElementById('password-input').value.trim()
     if (!pw) return
@@ -696,7 +656,6 @@ document.getElementById('password-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') login()
 })
 
-// ── FETCH ─────────────────────────────────────────
 async function fetchUsers() {
     try {
         const res = await fetch('/api/admin', { headers: { 'x-admin-password': adminPassword } })
@@ -710,7 +669,7 @@ async function fetchUsers() {
 }
 
 function updateStats() {
-    const now = Date.now() / 1000
+    const now     = Date.now() / 1000
     const banned  = users.filter(u => u.banned).length
     const paused  = users.filter(u => !u.active && !u.banned).length
     const expired = users.filter(u => !u.banned && u.active && u.expires !== 0 && now > u.expires).length
@@ -762,7 +721,6 @@ function filterUsers() {
 function renderTable(list) {
     const container = document.getElementById('user-table-container')
     if (!list || list.length === 0) { container.innerHTML = '<div class="empty">No hay usuarios</div>'; return }
-
     const rows = list.map(u => {
         const status = getStatus(u)
         const statusBadge = { active:'<span class="badge badge-active">Activo</span>', banned:'<span class="badge badge-banned">Baneado</span>', paused:'<span class="badge badge-paused">Pausado</span>', expired:'<span class="badge badge-expired">Expirado</span>' }[status]
@@ -771,8 +729,8 @@ function renderTable(list) {
         const banBtn   = u.banned ? `<button class="btn btn-neutral btn-sm" onclick="toggleBan('${u.id}',false)">Desbanear</button>` : `<button class="btn btn-danger btn-sm" onclick="toggleBan('${u.id}',true)">Banear</button>`
         const rowClass = u.banned ? 'banned' : (!u.active || status === 'expired' ? 'paused' : '')
         const notes    = u.notes ? `<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>` : ''
-        const hwidCell = u.hwid ? `<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${u.hwid.replace(/'/g,"\\'")}',this)">Copiar HWID</button></div>` : '<span style="color:#444;font-size:12px;">—</span>'
-
+        const safeHwid = u.hwid ? u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'") : ''
+        const hwidCell = u.hwid ? `<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${safeHwid}',this)">Copiar HWID</button></div>` : '<span style="color:#444;font-size:12px;">—</span>'
         return `
         <tr class="${rowClass}">
             <td><div style="font-weight:500;">${u.username}</div>${notes}</td>
@@ -790,32 +748,24 @@ function renderTable(list) {
             </div></td>
         </tr>`
     }).join('')
-
     container.innerHTML = `
-    <table>
-        <thead><tr>
-            <th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th>
-            <th>Juego</th><th>Expira</th><th>Estado</th>
-            <th style="text-align:right;">Acciones</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-    </table>`
+    <table><thead><tr>
+        <th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th>
+        <th>Juego</th><th>Expira</th><th>Estado</th>
+        <th style="text-align:right;">Acciones</th>
+    </tr></thead><tbody>${rows}</tbody></table>`
 }
 
-// ── MODAL EDITAR ──────────────────────────────────
 function openEdit(id) {
     const u = users.find(u => u.id === id)
     if (!u) return
-
-    document.getElementById('edit-id').value       = u.id
+    document.getElementById('edit-id').value      = u.id
     document.getElementById('modal-username').textContent = u.username
     document.getElementById('modal-uid').textContent      = 'UserId: ' + u.user_id
-    document.getElementById('edit-script').value   = u.script_name || 'global'
-    document.getElementById('edit-placeid').value  = u.place_id || 0
-    document.getElementById('edit-notes').value    = u.notes || ''
-    document.getElementById('edit-active').value   = u.active ? 'true' : 'false'
-
-    // Reset duración a "sin cambios"
+    document.getElementById('edit-script').value  = u.script_name || 'global'
+    document.getElementById('edit-placeid').value = u.place_id || 0
+    document.getElementById('edit-notes').value   = u.notes || ''
+    document.getElementById('edit-active').value  = u.active ? 'true' : 'false'
     editSeconds = -2
     document.getElementById('edit-duration-label').textContent = '🔒 Sin cambios'
     document.getElementById('edit-expires-preview').innerHTML = 'Sin cambios en la duración actual'
@@ -823,7 +773,6 @@ function openEdit(id) {
     document.getElementById('edit-custom-date').style.display = 'none'
     document.querySelectorAll('#edit-dd-panel .btn-preset').forEach(b => b.classList.remove('selected'))
     document.querySelector('#edit-dd-panel .btn-preset[onclick*="-2"]').classList.add('selected')
-
     document.getElementById('edit-msg').style.display = 'none'
     document.getElementById('edit-modal').classList.add('open')
 }
@@ -832,7 +781,6 @@ function closeModal() {
     document.getElementById('edit-modal').classList.remove('open')
 }
 
-// Cerrar modal al hacer click fuera
 document.getElementById('edit-modal').addEventListener('click', function(e) {
     if (e.target === this) closeModal()
 })
@@ -844,33 +792,20 @@ async function saveEdit() {
     const notes       = document.getElementById('edit-notes').value.trim()
     const active      = document.getElementById('edit-active').value === 'true'
     const msgEl       = document.getElementById('edit-msg')
-
-    const updates = { id, script_name, place_id, notes, active }
-
-    const expires = getExpiresFor('edit')
+    const updates     = { id, script_name, place_id, notes, active }
+    const expires     = getExpiresFor('edit')
     if (expires !== null) updates.expires = expires
-
-    const res = await fetch('/api/admin', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify(updates)
-    })
+    const res  = await fetch('/api/admin', { method:'PATCH', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify(updates) })
     const data = await res.json()
-
     if (data.success) {
-        msgEl.className = 'msg msg-success'
-        msgEl.textContent = '✓ Cambios guardados'
-        msgEl.style.display = 'block'
+        msgEl.className = 'msg msg-success'; msgEl.textContent = '✓ Cambios guardados'; msgEl.style.display = 'block'
         fetchUsers()
         setTimeout(() => closeModal(), 1500)
     } else {
-        msgEl.className = 'msg msg-error'
-        msgEl.textContent = 'Error: ' + (data.error || 'desconocido')
-        msgEl.style.display = 'block'
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido'); msgEl.style.display = 'block'
     }
 }
 
-// ── AGREGAR ───────────────────────────────────────
 async function addUser() {
     const username    = document.getElementById('new-username').value.trim()
     const user_id     = document.getElementById('new-userid').value.trim()
@@ -879,27 +814,14 @@ async function addUser() {
     const place_id    = document.getElementById('new-placeid').value.trim()
     const notes       = document.getElementById('new-notes').value.trim()
     const msgEl       = document.getElementById('add-msg')
-
     if (!username || !user_id || !hwid) {
-        msgEl.className = 'msg msg-error'
-        msgEl.textContent = 'Rellena username, UserId y HWID'
-        msgEl.style.display = 'block'
-        return
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena username, UserId y HWID'; msgEl.style.display = 'block'; return
     }
-
     const expires = getExpiresFor('add')
-
-    const res = await fetch('/api/admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ username, user_id, hwid, script_name, expires: expires ?? 0, notes, place_id: place_id ? parseInt(place_id) : 0 })
-    })
+    const res  = await fetch('/api/admin', { method:'POST', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({ username, user_id, hwid, script_name, expires: expires ?? 0, notes, place_id: place_id ? parseInt(place_id) : 0 }) })
     const data = await res.json()
-
     if (data.success) {
-        msgEl.className = 'msg msg-success'
-        msgEl.textContent = '✓ Usuario agregado'
-        msgEl.style.display = 'block'
+        msgEl.className = 'msg msg-success'; msgEl.textContent = '✓ Usuario agregado'; msgEl.style.display = 'block'
         document.getElementById('new-username').value = ''
         document.getElementById('new-userid').value   = ''
         document.getElementById('new-hwid').value     = ''
@@ -914,9 +836,7 @@ async function addUser() {
         fetchUsers()
         setTimeout(() => msgEl.style.display = 'none', 3000)
     } else {
-        msgEl.className = 'msg msg-error'
-        msgEl.textContent = 'Error: ' + (data.error || 'desconocido')
-        msgEl.style.display = 'block'
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido'); msgEl.style.display = 'block'
     }
 }
 
@@ -936,10 +856,9 @@ async function deleteUser(id) {
     fetchUsers()
 }
 
-// ── MAIN TAB SWITCH ──────────────────────────────
 function switchMainTab(tab) {
-    const wl = document.getElementById('section-whitelist')
-    const ad = document.getElementById('section-admins')
+    const wl    = document.getElementById('section-whitelist')
+    const ad    = document.getElementById('section-admins')
     const btnWl = document.getElementById('tab-whitelist')
     const btnAd = document.getElementById('tab-admins')
     if (tab === 'whitelist') {
@@ -952,14 +871,9 @@ function switchMainTab(tab) {
     }
 }
 
-// ── ADMIN SYSTEM ──────────────────────────────────
-let adminUsers = []
-
 async function fetchAdminUsers() {
     try {
-        const res = await fetch('/api/admin-system', {
-            headers: { 'x-admin-password': adminPassword }
-        })
+        const res = await fetch('/api/admin-system', { headers: { 'x-admin-password': adminPassword } })
         if (!res.ok) return
         const data = await res.json()
         adminUsers = data.users || []
@@ -977,12 +891,26 @@ function renderAdminTable() {
         const roleBadge = u.role === 'owner'
             ? '<span class="badge" style="background:#3a2a0a;color:#f0a030;">Owner</span>'
             : '<span class="badge" style="background:#1a2a4a;color:#7eb8f7;">Admin</span>'
-const changeBtn = u.role === 'owner'
+        const changeBtn = u.role === 'owner'
             ? `<button class="btn btn-neutral btn-sm" onclick="changeAdminRole('${u.id}','admin')">→ Admin</button>`
             : `<button class="btn btn-warning btn-sm" onclick="changeAdminRole('${u.id}','owner')">→ Owner</button>`
-        return '<tr><td style="font-weight:500;">'+u.username+'</td><td style="color:#666;font-size:12px;">'+u.user_id+'</td><td>'+roleBadge+'</td><td style="color:#666;font-size:12px;">'+new Date(u.created_at).toLocaleDateString('es')+'</td><td><div class="actions">'+changeBtn+'<button class="btn btn-danger btn-sm" onclick="removeAdminUser('${u.id}')">Borrar</button></div></td></tr>'
+        const safeHwid = u.hwid ? u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'") : ''
+        const hwidCell = u.hwid ? `<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${safeHwid}',this)">Copiar</button></div>` : '<span style="color:#444;font-size:12px;">—</span>'
+        return `<tr>
+            <td style="font-weight:500;">${u.username}</td>
+            <td style="color:#666;font-size:12px;">${u.user_id}</td>
+            <td>${hwidCell}</td>
+            <td>${roleBadge}</td>
+            <td style="color:#666;font-size:12px;">${new Date(u.created_at).toLocaleDateString('es')}</td>
+            <td><div class="actions">
+                ${changeBtn}
+                <button class="btn btn-danger btn-sm" onclick="removeAdminUser('${u.id}')">Borrar</button>
+            </div></td>
+        </tr>`
     }).join('')
-    container.innerHTML = '<table><thead><tr><th>Username</th><th>UserId</th><th>Rol</th><th>Agregado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    container.innerHTML = `<table><thead><tr>
+        <th>Username</th><th>UserId</th><th>HWID</th><th>Rol</th><th>Agregado</th><th style="text-align:right;">Acciones</th>
+    </tr></thead><tbody>${rows}</tbody></table>`
 }
 
 async function addAdminUser() {
@@ -992,45 +920,30 @@ async function addAdminUser() {
     const role     = document.getElementById('as-role').value
     const msgEl    = document.getElementById('as-msg')
     if (!user_id || !username || !hwid) {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena UserId, Username y HWID'
-        msgEl.style.display = 'block'; return
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena UserId, Username y HWID'; msgEl.style.display = 'block'; return
     }
-    const res = await fetch('/api/admin-system', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ user_id, username, hwid, role })
-    })
+    const res  = await fetch('/api/admin-system', { method:'POST', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({ user_id, username, hwid, role }) })
     const data = await res.json()
     if (data.success) {
-        msgEl.className = 'msg msg-success'; msgEl.textContent = 'Usuario agregado correctamente'
-        msgEl.style.display = 'block'
-document.getElementById('as-userid').value  = ''
+        msgEl.className = 'msg msg-success'; msgEl.textContent = 'Usuario agregado correctamente'; msgEl.style.display = 'block'
+        document.getElementById('as-userid').value   = ''
         document.getElementById('as-username').value = ''
         document.getElementById('as-hwid').value     = ''
         fetchAdminUsers()
         setTimeout(() => msgEl.style.display = 'none', 3000)
     } else {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido')
-        msgEl.style.display = 'block'
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido'); msgEl.style.display = 'block'
     }
 }
 
 async function changeAdminRole(id, newRole) {
-    await fetch('/api/admin-system', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ id, role: newRole })
-    })
+    await fetch('/api/admin-system', { method:'PATCH', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({ id, role: newRole }) })
     fetchAdminUsers()
 }
 
 async function removeAdminUser(id) {
     if (!confirm('Borrar este usuario del sistema admin?')) return
-    await fetch('/api/admin-system', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ id })
-    })
+    await fetch('/api/admin-system', { method:'DELETE', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({ id }) })
     fetchAdminUsers()
 }
 </script>
