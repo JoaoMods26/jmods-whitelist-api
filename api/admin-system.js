@@ -26,9 +26,8 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
 const { user_id, username, hwid, role } = req.body
 if (!user_id || !username || !hwid || !role) {
-    return res.status(400).json({ error: "Faltan datos (userId, username, hwid y role son requeridos)" })
-            return res.status(400).json({ error: "Faltan datos" })
-        }
+    return res.status(400).json({ error: "Faltan datos: userId, username, hwid y role son requeridos" })
+}
 const { data, error } = await supabase
             .from('admin_system')
             .insert([{ user_id: parseInt(user_id), username, hwid: hwid || '', role }])
