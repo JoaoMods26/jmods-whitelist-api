@@ -983,23 +983,25 @@ function renderAdminTable() {
 async function addAdminUser() {
     const user_id  = document.getElementById('as-userid').value.trim()
     const username = document.getElementById('as-username').value.trim()
+    const hwid     = document.getElementById('as-hwid').value.trim()
     const role     = document.getElementById('as-role').value
     const msgEl    = document.getElementById('as-msg')
-    if (!user_id || !username) {
-        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena UserId y Username'
+    if (!user_id || !username || !hwid) {
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena UserId, Username y HWID'
         msgEl.style.display = 'block'; return
     }
     const res = await fetch('/api/admin-system', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-        body: JSON.stringify({ user_id, username, role })
+        body: JSON.stringify({ user_id, username, hwid, role })
     })
     const data = await res.json()
     if (data.success) {
         msgEl.className = 'msg msg-success'; msgEl.textContent = 'Usuario agregado correctamente'
         msgEl.style.display = 'block'
-        document.getElementById('as-userid').value = ''
+document.getElementById('as-userid').value  = ''
         document.getElementById('as-username').value = ''
+        document.getElementById('as-hwid').value     = ''
         fetchAdminUsers()
         setTimeout(() => msgEl.style.display = 'none', 3000)
     } else {
