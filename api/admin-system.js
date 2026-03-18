@@ -24,13 +24,14 @@ export default async function handler(req, res) {
 
     // POST — agregar owner o admin
     if (req.method === "POST") {
-        const { user_id, username, role } = req.body
-        if (!user_id || !username || !role) {
+const { user_id, username, hwid, role } = req.body
+if (!user_id || !username || !hwid || !role) {
+    return res.status(400).json({ error: "Faltan datos (userId, username, hwid y role son requeridos)" })
             return res.status(400).json({ error: "Faltan datos" })
         }
-        const { data, error } = await supabase
+const { data, error } = await supabase
             .from('admin_system')
-            .insert([{ user_id: parseInt(user_id), username, role }])
+            .insert([{ user_id: parseInt(user_id), username, hwid: hwid || '', role }])
             .select()
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true, user: data[0] })
