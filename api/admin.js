@@ -1,6 +1,12 @@
-import { createClient } from '@supabase/supabase-js'
+const { createClient } = require('@supabase/supabase-js')
 
 export default async function handler(req, res) {
+    // CORS headers — sin esto el fetch desde el HTML falla
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password')
+
+    if (req.method === 'OPTIONS') return res.status(200).end()
 
     const authHeader = req.headers['x-admin-password']
     if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD) {
@@ -44,22 +50,22 @@ export default async function handler(req, res) {
         return res.json({ success: true, user: data[0] })
     }
 
-if (req.method === "PATCH") {
-    const { id, banned, active, expires, notes, script_name, place_id } = req.body
-    const updates = {}
-    if (banned      !== undefined) updates.banned      = banned
-    if (active      !== undefined) updates.active      = active
-    if (expires     !== undefined) updates.expires     = expires
-    if (notes       !== undefined) updates.notes       = notes
-    if (script_name !== undefined) updates.script_name = script_name
-    if (place_id    !== undefined) updates.place_id    = place_id
-    const { error } = await supabase
-        .from('whitelist')
-        .update(updates)
-        .eq('id', id)
-    if (error) return res.status(500).json({ error: error.message })
-    return res.json({ success: true })
-}
+    if (req.method === "PATCH") {
+        const { id, banned, active, expires, notes, script_name, place_id } = req.body
+        const updates = {}
+        if (banned      !== undefined) updates.banned      = banned
+        if (active      !== undefined) updates.active      = active
+        if (expires     !== undefined) updates.expires     = expires
+        if (notes       !== undefined) updates.notes       = notes
+        if (script_name !== undefined) updates.script_name = script_name
+        if (place_id    !== undefined) updates.place_id    = place_id
+        const { error } = await supabase
+            .from('whitelist')
+            .update(updates)
+            .eq('id', id)
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true })
+    }
 
     if (req.method === "DELETE") {
         const { id } = req.body
