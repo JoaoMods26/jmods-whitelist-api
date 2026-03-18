@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ allowed: false })
     }
 
-    const { userId, username, hwid, placeId, token } = req.body
+    const { userId, username, hwid, currentPlaceId, requiredPlaceId, token } = req.body
 
     if (!token || token !== process.env.API_TOKEN) {
         return res.status(403).json({ allowed: false, reason: "Token invalido" })
@@ -30,16 +30,23 @@ export default async function handler(req, res) {
         return res.json({ allowed: false, reason: "No autorizado" })
     }
 
-    // Buscar entrada que aplique:
-    // place_id = 0 → global (acceso a todo)
-    // place_id = placeId del script → acceso a ese juego específico
+    // Buscar entrada que aplique al script solicitado
     const entry = data.find(e =>
-        e.place_id === 0 ||
-        String(e.place_id) === String(placeId)
+        e.place_id === 0 ||                              // global
+        String(e.place_id) === String(requiredPlaceId)   // juego específico
     )
 
     if (!entry) {
-        return res.json({ allowed: false, reason: "Sin acceso para este juego" })
+        return res.json({ allowed: false, reason: "Sin acceso para este script" })
+    }
+
+    // ── CLAVE: verificar que el usuario está REALMENTE en ese juego ──
+    // Si la entrada es global (place_id=0) puede estar en cualquier juego
+    // Si la entrada es específica, el juego actual debe coincidir
+    if (entry.place_id !== 0) {
+        if (String(currentPlaceId) !== String(entry.place_id)) {
+            return res.json({ allowed: false, reason: "No estas en el juego correcto" })
+        }
     }
 
     if (entry.username.toLowerCase() !== String(username).toLowerCase()) {
