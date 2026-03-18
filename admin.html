@@ -346,21 +346,26 @@
       <div class="card-title" style="color:#7eb8f7;">Como funciona el Sistema Admin</div>
       <p style="font-size:13px;color:#666;line-height:1.6;">Las personas en esta lista tienen rol de <span style="color:#f0a030;">Owner</span> o <span style="color:#7eb8f7;">Admin</span>.<br>Los <strong style="color:#e0e0e0;">seguidores no necesitan estar aqui</strong> — cualquiera que ejecute el script recibe ordenes.<br>Solo los que estan aqui pueden <em>dar</em> ordenes.</p>
     </div>
-    <div class="card">
+  <div class="card">
       <div class="card-title">Agregar Owner / Admin</div>
       <div class="form-grid">
         <input id="as-userid" placeholder="UserId de Roblox" type="number" />
         <input id="as-username" placeholder="Username de Roblox" />
       </div>
+      <div class="form-full">
+        <input id="as-hwid" placeholder="HWID (del embed de Discord)" />
+        <p class="hint">Obligatorio — igual que en la whitelist</p>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
         <select id="as-role">
-          <option value="owner">Owner (control total)</option>
-          <option value="admin">Admin (comandos basicos)</option>
+          <option value="owner">👑 Owner (control total)</option>
+          <option value="admin">⚡ Admin (comandos básicos)</option>
         </select>
         <button class="btn btn-primary" onclick="addAdminUser()">+ Agregar</button>
       </div>
       <div id="as-msg" style="display:none;"></div>
     </div>
+   
     <div class="card">
       <div class="card-title">Owners y Admins registrados</div>
       <div class="table-wrap">
