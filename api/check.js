@@ -62,18 +62,3 @@ export default async function handler(req, res) {
 
     return res.json({ allowed: true })
 }
-```
-
----
-
-### Estructura final del proyecto en Vercel
-```
-/
-├── api/
-│   ├── admin.js
-│   ├── check.js
-│   └── test.js
-├── public/
-│   └── admin.html   ← el HTML del panel va aquí
-├── package.json
-└── vercel.json
