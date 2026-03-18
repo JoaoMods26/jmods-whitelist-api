@@ -1,6 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
+const { createClient } = require('@supabase/supabase-js')
 
 export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+    if (req.method === 'OPTIONS') return res.status(200).end()
 
     if (req.method !== "POST") {
         return res.status(405).json({ allowed: false })
@@ -11,7 +16,6 @@ export default async function handler(req, res) {
     if (!token || token !== process.env.API_TOKEN) {
         return res.status(403).json({ allowed: false, reason: "Token invalido" })
     }
-
     if (!userId || !username || !hwid) {
         return res.status(400).json({ allowed: false, reason: "Faltan datos" })
     }
@@ -30,41 +34,27 @@ export default async function handler(req, res) {
         return res.json({ allowed: false, reason: "No autorizado" })
     }
 
-    // Buscar entrada que aplique al script solicitado
     const entry = data.find(e =>
-        e.place_id === 0 ||                              // global
-        String(e.place_id) === String(requiredPlaceId)   // juego específico
+        e.place_id === 0 ||
+        String(e.place_id) === String(requiredPlaceId)
     )
 
-    if (!entry) {
-        return res.json({ allowed: false, reason: "Sin acceso para este script" })
-    }
+    if (!entry) return res.json({ allowed: false, reason: "Sin acceso para este script" })
 
-    // ── CLAVE: verificar que el usuario está REALMENTE en ese juego ──
-    // Si la entrada es global (place_id=0) puede estar en cualquier juego
-    // Si la entrada es específica, el juego actual debe coincidir
     if (entry.place_id !== 0) {
         if (String(currentPlaceId) !== String(entry.place_id)) {
             return res.json({ allowed: false, reason: "No estas en el juego correcto" })
         }
     }
 
-    if (entry.username.toLowerCase() !== String(username).toLowerCase()) {
+    if (entry.username.toLowerCase() !== String(username).toLowerCase())
         return res.json({ allowed: false, reason: "Username no coincide" })
-    }
-
-    if (entry.hwid !== String(hwid)) {
+    if (entry.hwid !== String(hwid))
         return res.json({ allowed: false, reason: "Dispositivo no reconocido" })
-    }
-
-    if (entry.banned) {
+    if (entry.banned)
         return res.json({ allowed: false, reason: "Acceso revocado" })
-    }
-
-    if (!entry.active) {
+    if (!entry.active)
         return res.json({ allowed: false, reason: "Acceso desactivado" })
-    }
-
     if (entry.expires !== 0 && Date.now() / 1000 > entry.expires) {
         await supabase.from('whitelist').update({ active: false }).eq('id', entry.id)
         return res.json({ allowed: false, reason: "Acceso expirado" })
@@ -72,3 +62,18 @@ export default async function handler(req, res) {
 
     return res.json({ allowed: true })
 }
+```
+
+---
+
+### Estructura final del proyecto en Vercel
+```
+/
+├── api/
+│   ├── admin.js
+│   ├── check.js
+│   └── test.js
+├── public/
+│   └── admin.html   ← el HTML del panel va aquí
+├── package.json
+└── vercel.json
