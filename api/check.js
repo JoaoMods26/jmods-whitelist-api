@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         process.env.SUPABASE_KEY
     )
 
-    // Buscar al usuario por ID
     const { data, error } = await supabase
         .from('whitelist')
         .select('*')
@@ -31,10 +30,12 @@ export default async function handler(req, res) {
         return res.json({ allowed: false, reason: "No autorizado" })
     }
 
-    // Buscar entrada que aplique a este juego
-    // place_id = 0 significa acceso en todos los juegos
+    // Buscar entrada que aplique:
+    // place_id = 0 → global (acceso a todo)
+    // place_id = placeId del script → acceso a ese juego específico
     const entry = data.find(e =>
-        e.place_id === 0 || String(e.place_id) === String(placeId)
+        e.place_id === 0 ||
+        String(e.place_id) === String(placeId)
     )
 
     if (!entry) {
