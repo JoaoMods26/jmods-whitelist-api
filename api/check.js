@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ allowed: false })
     }
 
-    const { userId, username, hwid, scriptName, token, placeId } = req.body
+    const { userId, username, hwid, placeId, token } = req.body
 
     if (!token || token !== process.env.API_TOKEN) {
         return res.status(403).json({ allowed: false, reason: "Token invalido" })
@@ -21,17 +21,25 @@ export default async function handler(req, res) {
         process.env.SUPABASE_KEY
     )
 
+    // Buscar al usuario por ID
     const { data, error } = await supabase
         .from('whitelist')
         .select('*')
         .eq('user_id', userId)
-        .in('script_name', ['global', scriptName || 'global'])
 
     if (error || !data || data.length === 0) {
         return res.json({ allowed: false, reason: "No autorizado" })
     }
 
-    const entry = data[0]
+    // Buscar entrada que aplique a este juego
+    // place_id = 0 significa acceso en todos los juegos
+    const entry = data.find(e =>
+        e.place_id === 0 || String(e.place_id) === String(placeId)
+    )
+
+    if (!entry) {
+        return res.json({ allowed: false, reason: "Sin acceso para este juego" })
+    }
 
     if (entry.username.toLowerCase() !== String(username).toLowerCase()) {
         return res.json({ allowed: false, reason: "Username no coincide" })
@@ -49,21 +57,10 @@ export default async function handler(req, res) {
         return res.json({ allowed: false, reason: "Acceso desactivado" })
     }
 
-    // Auto-pausa al expirar
     if (entry.expires !== 0 && Date.now() / 1000 > entry.expires) {
-        // Pausar automáticamente en la base de datos
-        await supabase
-            .from('whitelist')
-            .update({ active: false })
-            .eq('id', entry.id)
-
-        return res.json({ allowed: false, reason: "Acceso expirado — membresía pausada automáticamente" })
+        await supabase.from('whitelist').update({ active: false }).eq('id', entry.id)
+        return res.json({ allowed: false, reason: "Acceso expirado" })
     }
 
-    // Verificar PlaceId
-    if (entry.place_id !== 0 && placeId && entry.place_id !== parseInt(placeId)) {
-        return res.json({ allowed: false, reason: "Acceso no valido para este juego" })
-    }
-
-    return res.json({ allowed: true, accessType: entry.script_name })
+    return res.json({ allowed: true })
 }
