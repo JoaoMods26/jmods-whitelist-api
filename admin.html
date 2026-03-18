@@ -313,6 +313,14 @@
     <div id="add-msg" style="display:none;"></div>
   </div>
 
+  <!-- TABS NAVEGACION -->
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button class="btn btn-primary" id="tab-whitelist" onclick="switchMainTab('whitelist')" style="flex:1;">🔒 Whitelist</button>
+    <button class="btn btn-neutral" id="tab-admins" onclick="switchMainTab('admins')" style="flex:1;">👑 Sistema Admin</button>
+  </div>
+
+  <!-- SECCION WHITELIST -->
+  <div id="section-whitelist">
   <!-- TABLA -->
   <div class="card">
     <div class="card-title">Usuarios registrados</div>
@@ -330,6 +338,48 @@
       <div id="user-table-container"><div class="empty">Cargando...</div></div>
     </div>
   </div>
+  </div>
+
+  <!-- SECCION SISTEMA ADMIN -->
+  <div id="section-admins" style="display:none;">
+    <div class="card" style="border-color:#2a3a5c;">
+      <div class="card-title" style="color:#7eb8f7;">Como funciona el Sistema Admin</div>
+      <p style="font-size:13px;color:#666;line-height:1.6;">Las personas en esta lista tienen rol de <span style="color:#f0a030;">Owner</span> o <span style="color:#7eb8f7;">Admin</span>.<br>Los <strong style="color:#e0e0e0;">seguidores no necesitan estar aqui</strong> — cualquiera que ejecute el script recibe ordenes.<br>Solo los que estan aqui pueden <em>dar</em> ordenes.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Agregar Owner / Admin</div>
+      <div class="form-grid">
+        <input id="as-userid" placeholder="UserId de Roblox" type="number" />
+        <input id="as-username" placeholder="Username de Roblox" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <select id="as-role">
+          <option value="owner">Owner (control total)</option>
+          <option value="admin">Admin (comandos basicos)</option>
+        </select>
+        <button class="btn btn-primary" onclick="addAdminUser()">+ Agregar</button>
+      </div>
+      <div id="as-msg" style="display:none;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Owners y Admins registrados</div>
+      <div class="table-wrap">
+        <div id="admin-table-container"><div class="empty">Cargando...</div></div>
+      </div>
+    </div>
+    <div class="card" style="background:#0a0a0f;">
+      <div class="card-title" style="color:#555;">Diferencia de permisos</div>
+      <table style="width:100%;font-size:12px;color:#666;">
+        <tr style="border-bottom:1px solid #1a1a1a;"><th style="padding:8px;text-align:left;color:#444;">Comando</th><th style="padding:8px;text-align:center;color:#f0a030;">Owner</th><th style="padding:8px;text-align:center;color:#7eb8f7;">Admin</th></tr>
+        <tr style="border-bottom:1px solid #111;"><td style="padding:6px 8px;">.t .u .w (teleport/orbita)</td><td style="text-align:center;color:#40c070;">si</td><td style="text-align:center;color:#40c070;">si</td></tr>
+        <tr style="border-bottom:1px solid #111;"><td style="padding:6px 8px;">.b .sc (bailar/screamer)</td><td style="text-align:center;color:#40c070;">si</td><td style="text-align:center;color:#40c070;">si</td></tr>
+        <tr style="border-bottom:1px solid #111;"><td style="padding:6px 8px;">.q .qq (congelar)</td><td style="text-align:center;color:#40c070;">si</td><td style="text-align:center;color:#f07070;">no</td></tr>
+        <tr style="border-bottom:1px solid #111;"><td style="padding:6px 8px;">.k (expulsar)</td><td style="text-align:center;color:#40c070;">si</td><td style="text-align:center;color:#f07070;">no</td></tr>
+        <tr><td style="padding:6px 8px;">.m .r (mensaje/reiniciar)</td><td style="text-align:center;color:#40c070;">si</td><td style="text-align:center;color:#f07070;">no</td></tr>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <!-- MODAL EDITAR -->
@@ -879,6 +929,102 @@ async function deleteUser(id) {
     if (!confirm('¿Borrar este usuario permanentemente?')) return
     await fetch('/api/admin', { method:'DELETE', headers:{'Content-Type':'application/json','x-admin-password':adminPassword}, body:JSON.stringify({id}) })
     fetchUsers()
+}
+
+// ── MAIN TAB SWITCH ──────────────────────────────
+function switchMainTab(tab) {
+    const wl = document.getElementById('section-whitelist')
+    const ad = document.getElementById('section-admins')
+    const btnWl = document.getElementById('tab-whitelist')
+    const btnAd = document.getElementById('tab-admins')
+    if (tab === 'whitelist') {
+        wl.style.display = 'block'; ad.style.display = 'none'
+        btnWl.className = 'btn btn-primary'; btnAd.className = 'btn btn-neutral'
+    } else {
+        wl.style.display = 'none'; ad.style.display = 'block'
+        btnWl.className = 'btn btn-neutral'; btnAd.className = 'btn btn-primary'
+        fetchAdminUsers()
+    }
+}
+
+// ── ADMIN SYSTEM ──────────────────────────────────
+let adminUsers = []
+
+async function fetchAdminUsers() {
+    try {
+        const res = await fetch('/api/admin-system', {
+            headers: { 'x-admin-password': adminPassword }
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        adminUsers = data.users || []
+        renderAdminTable()
+    } catch {}
+}
+
+function renderAdminTable() {
+    const container = document.getElementById('admin-table-container')
+    if (!adminUsers || adminUsers.length === 0) {
+        container.innerHTML = '<div class="empty">No hay owners ni admins registrados</div>'
+        return
+    }
+    const rows = adminUsers.map(u => {
+        const roleBadge = u.role === 'owner'
+            ? '<span class="badge" style="background:#3a2a0a;color:#f0a030;">Owner</span>'
+            : '<span class="badge" style="background:#1a2a4a;color:#7eb8f7;">Admin</span>'
+        const changeBtn = u.role === 'owner'
+            ? '<button class="btn btn-neutral btn-sm" onclick="changeAdminRole(''+u.id+'','admin')">→ Admin</button>'
+            : '<button class="btn btn-warning btn-sm" onclick="changeAdminRole(''+u.id+'','owner')">→ Owner</button>'
+        return '<tr><td style="font-weight:500;">'+u.username+'</td><td style="color:#666;font-size:12px;">'+u.user_id+'</td><td>'+roleBadge+'</td><td style="color:#666;font-size:12px;">'+new Date(u.created_at).toLocaleDateString('es')+'</td><td><div class="actions">'+changeBtn+'<button class="btn btn-danger btn-sm" onclick="removeAdminUser(''+u.id+'')">Borrar</button></div></td></tr>'
+    }).join('')
+    container.innerHTML = '<table><thead><tr><th>Username</th><th>UserId</th><th>Rol</th><th>Agregado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>'+rows+'</tbody></table>'
+}
+
+async function addAdminUser() {
+    const user_id  = document.getElementById('as-userid').value.trim()
+    const username = document.getElementById('as-username').value.trim()
+    const role     = document.getElementById('as-role').value
+    const msgEl    = document.getElementById('as-msg')
+    if (!user_id || !username) {
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Rellena UserId y Username'
+        msgEl.style.display = 'block'; return
+    }
+    const res = await fetch('/api/admin-system', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({ user_id, username, role })
+    })
+    const data = await res.json()
+    if (data.success) {
+        msgEl.className = 'msg msg-success'; msgEl.textContent = 'Usuario agregado correctamente'
+        msgEl.style.display = 'block'
+        document.getElementById('as-userid').value = ''
+        document.getElementById('as-username').value = ''
+        fetchAdminUsers()
+        setTimeout(() => msgEl.style.display = 'none', 3000)
+    } else {
+        msgEl.className = 'msg msg-error'; msgEl.textContent = 'Error: ' + (data.error || 'desconocido')
+        msgEl.style.display = 'block'
+    }
+}
+
+async function changeAdminRole(id, newRole) {
+    await fetch('/api/admin-system', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({ id, role: newRole })
+    })
+    fetchAdminUsers()
+}
+
+async function removeAdminUser(id) {
+    if (!confirm('Borrar este usuario del sistema admin?')) return
+    await fetch('/api/admin-system', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({ id })
+    })
+    fetchAdminUsers()
 }
 </script>
 </body>
