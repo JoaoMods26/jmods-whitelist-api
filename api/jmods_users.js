@@ -10,7 +10,8 @@ module.exports = async function handler(req, res) {
     if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD)
         return res.status(403).json({ error: "No autorizado" })
 
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
+    // ← Usa el Supabase separado para JMods
+    const supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
 
     if (req.method === "GET") {
         const { data, error } = await supabase
