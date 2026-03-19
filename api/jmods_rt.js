@@ -209,5 +209,31 @@ module.exports = async function handler(req, res) {
         return res.json({ users: data })
     }
 
+    // ── ENVIAR TRIGGER (owner activa a los followers) ──
+    if (action === 'send_trigger') {
+        const { server_id } = req.body
+        const { error } = await supabase
+            .from('jmods_heartbeats')
+            .update({ trigger_active: true, trigger_at: new Date().toISOString() })
+            .eq('server_id', server_id)
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true })
+    }
+
+    // ── GET TRIGGER (followers chequean si hay señal) ──
+    if (action === 'get_trigger') {
+        const { server_id } = req.body
+        const cutoff = new Date(Date.now() - 35000).toISOString() // últimos 35s
+        const { data, error } = await supabase
+            .from('jmods_heartbeats')
+            .select('trigger_active, trigger_at')
+            .eq('server_id', server_id)
+            .eq('trigger_active', true)
+            .gte('trigger_at', cutoff)
+            .limit(1)
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ active: data && data.length > 0 })
+    }
+
     return res.status(400).json({ error: "Acción no reconocida" })
 }
