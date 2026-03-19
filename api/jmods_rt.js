@@ -10,7 +10,8 @@ module.exports = async function handler(req, res) {
     if (!token || token !== process.env.API_TOKEN)
         return res.status(403).json({ error: "Token inválido" })
 
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
+    // ← Usa el Supabase separado para JMods
+    const supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
     const { action } = req.body || req.query
 
     // ── HEARTBEAT ──
