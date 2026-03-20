@@ -10,7 +10,6 @@ module.exports = async function handler(req, res) {
     if (!token || token !== process.env.API_TOKEN)
         return res.status(403).json({ error: "Token inválido" })
 
-    // ← Usa el Supabase separado para JMods
     const supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
     const { action } = req.body || req.query
 
@@ -44,6 +43,30 @@ module.exports = async function handler(req, res) {
         return res.json({ players: data })
     }
 
+    // ── SEND TRIGGER ──
+    if (action === 'send_trigger') {
+        const { server_id } = req.body
+        const { error } = await supabase
+            .from('jmods_triggers')
+            .insert([{ server_id }])
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ success: true })
+    }
+
+    // ── GET TRIGGER ──
+    if (action === 'get_trigger') {
+        const { server_id } = req.body
+        const cutoff = new Date(Date.now() - 20000).toISOString()
+        const { data, error } = await supabase
+            .from('jmods_triggers')
+            .select('id')
+            .eq('server_id', server_id)
+            .gte('created_at', cutoff)
+            .limit(1)
+        if (error) return res.status(500).json({ error: error.message })
+        return res.json({ active: data && data.length > 0 })
+    }
+
     // ── ENVIAR COMANDO ──
     if (action === 'send_command') {
         const { sender_id, sender_role, server_id, command, target } = req.body
@@ -65,7 +88,7 @@ module.exports = async function handler(req, res) {
     // ── LEER COMANDOS PENDIENTES ──
     if (action === 'get_commands') {
         const { server_id } = req.body
-        const cutoff = new Date(Date.now() - 15000).toISOString()
+        const cutoff = new Date(Date.now() - 20000).toISOString()
         const { data, error } = await supabase
             .from('jmods_commands')
             .select('*')
@@ -74,7 +97,20 @@ module.exports = async function handler(req, res) {
             .gte('created_at', cutoff)
             .order('created_at', { ascending: true })
         if (error) return res.status(500).json({ error: error.message })
-        return res.json({ commands: data })
+        if (!data || data.length === 0) return res.json({ commands: [] })
+
+        // Validar que el sender sea owner o admin en la DB
+        const senderIds = [...new Set(data.map(c => c.sender_id))]
+        const { data: validSenders } = await supabase
+            .from('jmods_users')
+            .select('user_id, role')
+            .in('user_id', senderIds)
+            .in('role', ['owner', 'admin'])
+            .eq('active', true)
+
+        const validIds = new Set((validSenders || []).map(u => u.user_id))
+        const filtered = data.filter(c => validIds.has(c.sender_id))
+        return res.json({ commands: filtered })
     }
 
     // ── ACK COMANDOS ──
@@ -109,7 +145,7 @@ module.exports = async function handler(req, res) {
     // ── LEER EJECUCIONES PENDIENTES ──
     if (action === 'get_executions') {
         const { user_id, username, server_id } = req.body
-        const cutoff = new Date(Date.now() - 15000).toISOString()
+        const cutoff = new Date(Date.now() - 20000).toISOString()
         const { data, error } = await supabase
             .from('jmods_executions')
             .select('*')
@@ -117,7 +153,7 @@ module.exports = async function handler(req, res) {
             .gte('created_at', cutoff)
         if (error) return res.status(500).json({ error: error.message })
 
-        const filtered = data.filter(e => {
+        const filtered = (data || []).filter(e => {
             return e.target === '.all' ||
                    (e.target === '.s' && e.server_id === server_id) ||
                    e.target === username
@@ -155,7 +191,7 @@ module.exports = async function handler(req, res) {
     // ── LEER BRINGS PENDIENTES ──
     if (action === 'get_brings') {
         const { user_id, server_id } = req.body
-        const cutoff = new Date(Date.now() - 15000).toISOString()
+        const cutoff = new Date(Date.now() - 20000).toISOString()
         const { data, error } = await supabase
             .from('jmods_brings')
             .select('*')
@@ -209,31 +245,5 @@ module.exports = async function handler(req, res) {
         return res.json({ users: data })
     }
 
-    // ── ENVIAR TRIGGER (owner activa a los followers) ──
-    if (action === 'send_trigger') {
-        const { server_id } = req.body
-        const { error } = await supabase
-            .from('jmods_heartbeats')
-            .update({ trigger_active: true, trigger_at: new Date().toISOString() })
-            .eq('server_id', server_id)
-        if (error) return res.status(500).json({ error: error.message })
-        return res.json({ success: true })
-    }
-
-    // ── GET TRIGGER (followers chequean si hay señal) ──
-    if (action === 'get_trigger') {
-        const { server_id } = req.body
-        const cutoff = new Date(Date.now() - 35000).toISOString() // últimos 35s
-        const { data, error } = await supabase
-            .from('jmods_heartbeats')
-            .select('trigger_active, trigger_at')
-            .eq('server_id', server_id)
-            .eq('trigger_active', true)
-            .gte('trigger_at', cutoff)
-            .limit(1)
-        if (error) return res.status(500).json({ error: error.message })
-        return res.json({ active: data && data.length > 0 })
-    }
-
-    return res.status(400).json({ error: "Acción no reconocida" })
+    return res.status(400).json({ error: "Accion no reconocida: " + action })
 }
