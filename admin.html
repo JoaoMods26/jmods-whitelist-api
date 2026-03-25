@@ -48,9 +48,48 @@
   .btn-copy { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; padding: 2px 7px; font-size: 11px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
   .btn-copy:hover { background: #222; color: #aaa; }
   .btn-copy.copied { background: #0a2a1a; color: #40c070; border-color: #1a5a30; }
+
+  /* ══ HWID MULTI-INPUT ══ */
+  .hwid-list { display: flex; flex-direction: column; gap: 6px; }
+  .hwid-entry { display: flex; gap: 6px; align-items: center; }
+  .hwid-entry input { flex: 1; font-family: monospace; font-size: 12px; }
+  .hwid-entry .btn-remove-hwid {
+    flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    background: #2a0a0a; border: 1px solid #5a1a1a; color: #f07070; border-radius: 6px;
+    cursor: pointer; font-size: 14px; line-height: 1; padding: 0;
+    transition: background 0.15s;
+  }
+  .hwid-entry .btn-remove-hwid:hover { background: #3a1010; }
+  .hwid-entry .hwid-badge {
+    flex-shrink: 0; font-size: 10px; color: #555; background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 4px; padding: 2px 6px; white-space: nowrap;
+  }
+  .btn-add-hwid {
+    display: flex; align-items: center; gap: 6px; width: 100%; margin-top: 6px;
+    padding: 7px 12px; background: #1a1a2a; border: 1px dashed #3a3a5a;
+    border-radius: 8px; color: #7070b0; font-size: 12px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-add-hwid:hover { background: #1e1e2e; border-color: #5a5a9a; color: #9090d0; }
+  .hwid-section-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .hwid-count-badge { background: #2a1a3a; color: #c084fc; border: 1px solid #4a2a6a; border-radius: 10px; padding: 1px 8px; font-size: 10px; font-weight: 500; }
+
+  /* ══ Tabla HWID chips ══ */
+  .hwid-chips { display: flex; flex-wrap: wrap; gap: 4px; max-width: 220px; }
+  .hwid-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #1a1a2a; border: 1px solid #2a2a4a; border-radius: 4px;
+    padding: 2px 7px; font-size: 10px; font-family: monospace; color: #8888cc;
+    cursor: pointer; transition: background 0.15s; white-space: nowrap; max-width: 160px;
+  }
+  .hwid-chip:hover { background: #1e1e2e; border-color: #4a4a8a; color: #b0b0ff; }
+  .hwid-chip .chip-dot { width: 5px; height: 5px; border-radius: 50%; background: #5a5aaa; flex-shrink: 0; }
+  .hwid-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hwids-more { font-size: 10px; color: #555; padding: 2px 4px; }
+
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal { background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+  .modal { background: #111; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
   .modal-header h2 { font-size: 16px; font-weight: 500; }
   .modal-close { background: none; border: none; color: #666; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
@@ -106,8 +145,6 @@
   .table-wrap { overflow-x: auto; }
   .search-bar { display: flex; gap: 8px; margin-bottom: 1rem; }
   .search-bar input { flex: 1; }
-  .hwid-cell { display: flex; align-items: center; gap: 6px; }
-  .hwid-text { font-size: 11px; color: #444; font-family: monospace; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .role-select-wrap { display: flex; gap: 6px; margin-bottom: 8px; }
   .role-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #666; font-size: 12px; cursor: pointer; text-align: center; transition: all 0.15s; }
   .role-btn:hover { border-color: #444; color: #aaa; }
@@ -329,15 +366,26 @@
 
     <div class="card jmods-card">
       <div class="card-title">👑 Agregar usuario JMods</div>
-      <p style="font-size:12px;color:#555;margin-bottom:14px;">Owners, admins y followers del script de administración de Roblox. <strong style="color:#c084fc">Separado</strong> de la whitelist de scripts.</p>
+      <p style="font-size:12px;color:#555;margin-bottom:14px;">Owners, admins y followers del script. <strong style="color:#c084fc">Separado</strong> de la whitelist de scripts.</p>
       <div class="form-grid">
         <input id="jnew-username" placeholder="Username de Roblox" />
         <input id="jnew-userid" placeholder="UserId (número)" type="number" />
       </div>
+
+      <!-- ══ HWID MULTI-INPUT (agregar) ══ -->
       <div class="form-full">
-        <input id="jnew-hwid" placeholder="HWID del usuario" />
-        <p class="hint">⚠️ Debe coincidir exactamente con el HWID que reporta el executor</p>
+        <div class="hwid-section-label">
+          <span>HWIDs del dispositivo</span>
+          <span class="hwid-count-badge" id="jnew-hwid-count">0 HWIDs</span>
+        </div>
+        <div class="hwid-list" id="jnew-hwid-list"></div>
+        <button type="button" class="btn-add-hwid" onclick="addHwidField('jnew')">
+          <span style="font-size:16px;line-height:1;">+</span>
+          <span>Agregar HWID</span>
+        </button>
+        <p class="hint" style="margin-top:6px;">⚠️ Cada HWID permite usar el script desde 1 dispositivo diferente. Agrega más para permitir múltiples dispositivos.</p>
       </div>
+
       <div class="form-full">
         <input id="jnew-notes" placeholder="Notas (opcional)" />
       </div>
@@ -525,7 +573,7 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR JMODS USER -->
+<!-- MODAL EDITAR JMODS USER (con multi-HWID) -->
 <div class="modal-overlay" id="jedit-modal">
   <div class="modal">
     <div class="modal-header">
@@ -540,10 +588,21 @@
       <div class="modal-section-label">Username</div>
       <input id="jedit-username" placeholder="Username de Roblox" />
     </div>
+
+    <!-- ══ HWID MULTI-INPUT (editar) ══ -->
     <div class="modal-section">
-      <div class="modal-section-label">HWID</div>
-      <input id="jedit-hwid" placeholder="HWID del usuario" />
+      <div class="hwid-section-label">
+        <span>HWIDs vinculados</span>
+        <span class="hwid-count-badge" id="jedit-hwid-count">0 HWIDs</span>
+      </div>
+      <div class="hwid-list" id="jedit-hwid-list"></div>
+      <button type="button" class="btn-add-hwid" onclick="addHwidField('jedit')">
+        <span style="font-size:16px;line-height:1;">+</span>
+        <span>Agregar otro HWID</span>
+      </button>
+      <p class="hint" style="margin-top:6px;">Cada HWID = 1 dispositivo autorizado. Mínimo 1 requerido.</p>
     </div>
+
     <div class="modal-section">
       <div class="modal-section-label">Nueva duración</div>
       <div class="duration-dropdown" id="jedit-dd">
@@ -633,6 +692,79 @@ let jAddSeconds = 0
 let jEditSeconds = -2
 
 // ══════════════════════════════════════════
+// HWID MULTI-INPUT HELPERS
+// ══════════════════════════════════════════
+function updateHwidCount(ctx) {
+    const list = document.getElementById(ctx + '-hwid-list')
+    const count = list ? list.querySelectorAll('.hwid-entry').length : 0
+    const badge = document.getElementById(ctx + '-hwid-count')
+    if (badge) badge.textContent = count + ' HWID' + (count !== 1 ? 's' : '')
+}
+
+function addHwidField(ctx, value = '') {
+    const list = document.getElementById(ctx + '-hwid-list')
+    const idx = list.querySelectorAll('.hwid-entry').length
+    const entry = document.createElement('div')
+    entry.className = 'hwid-entry'
+    entry.innerHTML = `
+        <span class="hwid-badge">#${idx + 1}</span>
+        <input type="text" placeholder="HWID del dispositivo..." value="${value.replace(/"/g, '&quot;')}" style="font-family:monospace;font-size:12px;" oninput="updateHwidCount('${ctx}')" />
+        <button type="button" class="btn-remove-hwid" title="Quitar HWID" onclick="removeHwidField(this, '${ctx}')">×</button>
+    `
+    list.appendChild(entry)
+    updateHwidCount(ctx)
+    // Re-numerar badges
+    renumberHwidBadges(ctx)
+}
+
+function removeHwidField(btn, ctx) {
+    const list = document.getElementById(ctx + '-hwid-list')
+    const entries = list.querySelectorAll('.hwid-entry')
+    if (entries.length <= 1) {
+        // No permitir borrar el último — solo limpiar el valor
+        const input = btn.closest('.hwid-entry').querySelector('input')
+        if (input) input.value = ''
+        return
+    }
+    btn.closest('.hwid-entry').remove()
+    updateHwidCount(ctx)
+    renumberHwidBadges(ctx)
+}
+
+function renumberHwidBadges(ctx) {
+    const list = document.getElementById(ctx + '-hwid-list')
+    list.querySelectorAll('.hwid-entry').forEach((entry, i) => {
+        const badge = entry.querySelector('.hwid-badge')
+        if (badge) badge.textContent = '#' + (i + 1)
+    })
+}
+
+function getHwidsFromList(ctx) {
+    const list = document.getElementById(ctx + '-hwid-list')
+    const hwids = []
+    list.querySelectorAll('.hwid-entry input').forEach(inp => {
+        const v = inp.value.trim()
+        if (v) hwids.push(v)
+    })
+    return hwids
+}
+
+function clearHwidList(ctx) {
+    const list = document.getElementById(ctx + '-hwid-list')
+    list.innerHTML = ''
+    updateHwidCount(ctx)
+}
+
+function populateHwidList(ctx, hwids) {
+    clearHwidList(ctx)
+    if (!hwids || hwids.length === 0) {
+        addHwidField(ctx, '')
+    } else {
+        hwids.forEach(h => addHwidField(ctx, h))
+    }
+}
+
+// ══════════════════════════════════════════
 // PAGE TABS
 // ══════════════════════════════════════════
 function switchPage(page) {
@@ -717,7 +849,6 @@ function getExpiresFor(ctx) {
     return Math.floor(Date.now() / 1000) + sec
 }
 
-// ── JMods duration ──
 function selectJPreset(btn, seconds) {
     document.getElementById('jadd-dd-panel').querySelectorAll('.btn-preset').forEach(b => b.classList.remove('selected'))
     btn.classList.add('selected')
@@ -771,6 +902,8 @@ async function login() {
     if (ok) {
         document.getElementById('login-screen').style.display = 'none'
         document.getElementById('panel').style.display = 'block'
+        // Inicializar lista HWID vacía en agregar
+        populateHwidList('jnew', [])
     } else {
         errEl.style.display = 'block'
         adminPassword = ''
@@ -832,10 +965,11 @@ function formatPlaceId(pid) {
     if (!pid || pid === 0) return '<span style="color:#555;font-size:12px;">Todos</span>'
     return `<a href="https://www.roblox.com/games/${pid}" target="_blank" style="color:#7eb8f7;text-decoration:none;font-size:12px;">${pid}</a>`
 }
-function copyHWID(hwid, btn) {
-    navigator.clipboard.writeText(hwid).catch(()=>{const ta=document.createElement('textarea');ta.value=hwid;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)})
+function copyText(text, btn) {
+    navigator.clipboard.writeText(text).catch(()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)})
+    const orig = btn.textContent
     btn.textContent='✓ Copiado';btn.classList.add('copied')
-    setTimeout(()=>{btn.textContent='Copiar HWID';btn.classList.remove('copied')},2000)
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied')},2000)
 }
 function filterUsers() {
     const s = document.getElementById('search-input').value.toLowerCase()
@@ -854,7 +988,7 @@ function renderTable(list) {
         const rc = u.banned?'banned':(!u.active||status==='expired'?'paused':'')
         const nt = u.notes?`<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,25)}${u.notes.length>25?'...':''}</div>`:''
         const sh = u.hwid?u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):''
-        const hc = u.hwid?`<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyHWID('${sh}',this)">Copiar HWID</button></div>`:'<span style="color:#444;font-size:12px;">—</span>'
+        const hc = u.hwid?`<div class="hwid-cell" style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:#444;font-family:monospace;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${u.hwid}">${u.hwid.substring(0,12)}...</span><button class="btn-copy" onclick="copyText('${sh}',this)">Copiar HWID</button></div>`:'<span style="color:#444;font-size:12px;">—</span>'
         return `<tr class="${rc}"><td><div style="font-weight:500;">${u.username}</div>${nt}</td><td style="color:#666;font-size:12px;">${u.user_id}</td><td>${hc}</td><td>${scb}</td><td>${formatPlaceId(u.place_id)}</td><td>${formatExpires(u.expires)}</td><td>${sb}</td><td><div class="actions"><button class="btn btn-edit btn-sm" onclick="openEdit('${u.id}')">✏️ Editar</button>${pb}${bb}<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Borrar</button></div></td></tr>`
     }).join('')
     c.innerHTML = `<table><thead><tr><th>Usuario</th><th>UserId</th><th>HWID</th><th>Lista</th><th>Juego</th><th>Expira</th><th>Estado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>${rows}</tbody></table>`
@@ -954,6 +1088,30 @@ function formatJExpires(ts) {
     const col = diff<3600?'#f07070':diff<86400?'#f0a030':'#7eb8f7'
     return `<span style="color:${col};font-size:12px;font-weight:500;">${tl}</span>`
 }
+
+// Renderiza chips de HWIDs en la tabla
+function renderHwidChips(hwids) {
+    if (!hwids || hwids.length === 0) return '<span style="color:#444;font-size:12px;">—</span>'
+    const maxShow = 2
+    const chips = hwids.slice(0, maxShow).map((h, i) => {
+        const short = h.length > 14 ? h.substring(0, 14) + '…' : h
+        const safeH = h.replace(/'/g, "\\'")
+        return `<span class="hwid-chip" title="${h}" onclick="copyChipHwid('${safeH}', this)"><span class="chip-dot"></span><span class="hwid-chip-text">${short}</span></span>`
+    }).join('')
+    const more = hwids.length > maxShow ? `<span class="hwids-more">+${hwids.length - maxShow} más</span>` : ''
+    return `<div class="hwid-chips">${chips}${more}</div>`
+}
+
+function copyChipHwid(hwid, el) {
+    navigator.clipboard.writeText(hwid).catch(()=>{const ta=document.createElement('textarea');ta.value=hwid;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)})
+    const orig = el.innerHTML
+    el.style.background = '#0a2a1a'
+    el.style.borderColor = '#1a5a30'
+    el.style.color = '#40c070'
+    el.querySelector('.hwid-chip-text').textContent = '✓ Copiado'
+    setTimeout(() => { el.innerHTML = orig; el.style.background=''; el.style.borderColor=''; el.style.color='' }, 1500)
+}
+
 function renderJmodsTable(list) {
     const c = document.getElementById('jmods-table-container')
     if (!list||list.length===0){c.innerHTML='<div class="empty">No hay usuarios JMods registrados</div>';return}
@@ -962,32 +1120,48 @@ function renderJmodsTable(list) {
     const rows = sorted.map(u => {
         const rb = {owner:'<span class="badge badge-owner">👑 Owner</span>',admin:'<span class="badge badge-admin">🛡️ Admin</span>',follower:'<span class="badge badge-follower">👤 Follower</span>'}[u.role]||`<span class="badge">${u.role}</span>`
         const sb = u.active?'<span class="badge badge-active">Activo</span>':'<span class="badge badge-inactive">Inactivo</span>'
-        const sh = u.hwid?u.hwid.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):''
-        const hc = u.hwid?`<div class="hwid-cell"><span class="hwid-text" title="${u.hwid}">${u.hwid.substring(0,14)}...</span><button class="btn-copy" onclick="copyHWID('${sh}',this)">Copiar</button></div>`:'<span style="color:#444;font-size:12px;">—</span>'
+        // Usar hwids (array) con fallback a hwid legacy
+        const hwidsArr = (u.hwids && u.hwids.length > 0) ? u.hwids : (u.hwid ? [u.hwid] : [])
+        const hc = renderHwidChips(hwidsArr)
+        const deviceCount = hwidsArr.length
+        const deviceBadge = deviceCount > 1 ? `<div style="font-size:10px;color:#7070b0;margin-top:3px;">📱 ${deviceCount} dispositivos</div>` : ''
         const nt = u.notes?`<div style="font-size:11px;color:#555;margin-top:2px;">📝 ${u.notes.substring(0,30)}${u.notes.length>30?'...':''}</div>`:''
         const cr = u.created_at?new Date(u.created_at).toLocaleDateString('es'):'—'
         const tb = u.active?`<button class="btn btn-warning btn-sm" onclick="toggleJmodsActive('${u.id}',false)">Desactivar</button>`:`<button class="btn btn-success btn-sm" onclick="toggleJmodsActive('${u.id}',true)">Activar</button>`
-        return `<tr class="${!u.active?'paused':''}"><td><div style="font-weight:500;">${u.username}</div>${nt}</td><td style="color:#666;font-size:12px;">${u.user_id}</td><td>${hc}</td><td>${rb}</td><td>${sb}</td><td>${formatJExpires(u.expires)}</td><td style="color:#555;font-size:12px;">${cr}</td><td><div class="actions"><button class="btn btn-edit btn-sm" onclick="openJEdit('${u.id}')">✏️ Editar</button>${tb}<button class="btn btn-danger btn-sm" onclick="deleteJmodsUser('${u.id}')">Borrar</button></div></td></tr>`
+        return `<tr class="${!u.active?'paused':''}"><td><div style="font-weight:500;">${u.username}</div>${nt}</td><td style="color:#666;font-size:12px;">${u.user_id}</td><td>${hc}${deviceBadge}</td><td>${rb}</td><td>${sb}</td><td>${formatJExpires(u.expires)}</td><td style="color:#555;font-size:12px;">${cr}</td><td><div class="actions"><button class="btn btn-edit btn-sm" onclick="openJEdit('${u.id}')">✏️ Editar</button>${tb}<button class="btn btn-danger btn-sm" onclick="deleteJmodsUser('${u.id}')">Borrar</button></div></td></tr>`
     }).join('')
-    c.innerHTML = `<table><thead><tr><th>Usuario</th><th>UserId</th><th>HWID</th><th>Rol</th><th>Estado</th><th>Expira</th><th>Creado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>${rows}</tbody></table>`
+    c.innerHTML = `<table><thead><tr><th>Usuario</th><th>UserId</th><th>HWIDs</th><th>Rol</th><th>Estado</th><th>Expira</th><th>Creado</th><th style="text-align:right;">Acciones</th></tr></thead><tbody>${rows}</tbody></table>`
 }
+
 async function addJmodsUser() {
-    const username=document.getElementById('jnew-username').value.trim()
-    const user_id=document.getElementById('jnew-userid').value.trim()
-    const hwid=document.getElementById('jnew-hwid').value.trim()
-    const role=document.getElementById('jnew-role').value
-    const notes=document.getElementById('jnew-notes').value.trim()
-    const msgEl=document.getElementById('jadd-msg')
-    if(!username||!user_id||!hwid){msgEl.className='msg msg-error';msgEl.textContent='Rellena username, UserId y HWID';msgEl.style.display='block';return}
+    const username = document.getElementById('jnew-username').value.trim()
+    const user_id  = document.getElementById('jnew-userid').value.trim()
+    const role     = document.getElementById('jnew-role').value
+    const notes    = document.getElementById('jnew-notes').value.trim()
+    const hwids    = getHwidsFromList('jnew')
+    const msgEl    = document.getElementById('jadd-msg')
+
+    if (!username || !user_id) {
+        msgEl.className='msg msg-error'; msgEl.textContent='Rellena username y UserId'; msgEl.style.display='block'; return
+    }
+    if (hwids.length === 0) {
+        msgEl.className='msg msg-error'; msgEl.textContent='Agrega al menos 1 HWID'; msgEl.style.display='block'; return
+    }
+
     const expires = jAddSeconds === 0 ? 0 : Math.floor(Date.now() / 1000) + jAddSeconds
-    const res=await fetch('/api/jmods_users',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({username,user_id,hwid,role,notes,expires})})
-    const data=await res.json()
-    if(data.success){
-        msgEl.className='msg msg-success';msgEl.textContent='✓ Usuario JMods agregado';msgEl.style.display='block'
+    const res = await fetch('/api/jmods_users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({ username, user_id, hwid: hwids[0], hwids, role, notes, expires })
+    })
+    const data = await res.json()
+    if (data.success) {
+        msgEl.className='msg msg-success'; msgEl.textContent='✓ Usuario JMods agregado'; msgEl.style.display='block'
         document.getElementById('jnew-username').value=''
         document.getElementById('jnew-userid').value=''
-        document.getElementById('jnew-hwid').value=''
         document.getElementById('jnew-notes').value=''
+        clearHwidList('jnew')
+        addHwidField('jnew', '')
         jAddSeconds=0
         document.getElementById('jadd-duration-label').textContent='♾️ Permanente'
         document.getElementById('jadd-expires-preview').innerHTML='♾️ Sin fecha de expiración — acceso permanente'
@@ -995,45 +1169,77 @@ async function addJmodsUser() {
         document.querySelectorAll('#jadd-dd-panel .btn-preset').forEach(b=>b.classList.remove('selected'))
         document.querySelector('#jadd-dd-panel .btn-preset[onclick*="this,0"]').classList.add('selected')
         fetchJmodsUsers(); setTimeout(()=>msgEl.style.display='none',3000)
-    } else {msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
+    } else {
+        msgEl.className='msg msg-error'; msgEl.textContent='Error: '+(data.error||'desconocido'); msgEl.style.display='block'
+    }
 }
+
 function openJEdit(id) {
     const u = jmodsUsers.find(u=>u.id===id); if(!u) return
     document.getElementById('jedit-id').value=u.id
     document.getElementById('jmodal-username').textContent=u.username
     document.getElementById('jmodal-uid').textContent='UserId: '+u.user_id+' • Rol: '+u.role
     document.getElementById('jedit-username').value=u.username
-    document.getElementById('jedit-hwid').value=u.hwid||''
     document.getElementById('jedit-notes').value=u.notes||''
     document.getElementById('jedit-active').value=u.active?'true':'false'
     document.getElementById('jedit-role').value=u.role||'follower'
     document.getElementById('jedit-role-desc').innerHTML=roleDescs[u.role]||''
+
+    // Poblar HWIDs
+    const hwidsArr = (u.hwids && u.hwids.length > 0) ? u.hwids : (u.hwid ? [u.hwid] : [])
+    populateHwidList('jedit', hwidsArr)
+
     jEditSeconds=-2
     document.getElementById('jedit-duration-label').textContent='🔒 Sin cambios'
     document.getElementById('jedit-expires-preview').innerHTML='Sin cambios en la duración actual'
     document.getElementById('jedit-expires-preview').style.color='#666'
     document.querySelectorAll('#jedit-dd-panel .btn-preset').forEach(b=>b.classList.remove('selected'))
     document.querySelector('#jedit-dd-panel .btn-preset[onclick*="-2"]').classList.add('selected')
+
     const wrap=document.getElementById('jedit-role-wrap')
     wrap.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected-owner','selected-admin','selected-follower'))
     const tb=wrap.querySelector(`[onclick*="'${u.role}'"]`)
     if(tb) tb.classList.add('selected-'+u.role)
+
     document.getElementById('jedit-msg').style.display='none'
     document.getElementById('jedit-modal').classList.add('open')
 }
 function closeJModal(){document.getElementById('jedit-modal').classList.remove('open')}
 document.getElementById('jedit-modal').addEventListener('click',function(e){if(e.target===this)closeJModal()})
+
 async function saveJEdit() {
-    const id=document.getElementById('jedit-id').value
-    const updates={id,username:document.getElementById('jedit-username').value.trim(),hwid:document.getElementById('jedit-hwid').value.trim(),role:document.getElementById('jedit-role').value,notes:document.getElementById('jedit-notes').value.trim(),active:document.getElementById('jedit-active').value==='true'}
+    const id       = document.getElementById('jedit-id').value
+    const hwids    = getHwidsFromList('jedit')
+    const msgEl    = document.getElementById('jedit-msg')
+
+    if (hwids.length === 0) {
+        msgEl.className='msg msg-error'; msgEl.textContent='Se requiere al menos 1 HWID'; msgEl.style.display='block'; return
+    }
+
+    const updates = {
+        id,
+        username: document.getElementById('jedit-username').value.trim(),
+        hwid: hwids[0],
+        hwids,
+        role: document.getElementById('jedit-role').value,
+        active: document.getElementById('jedit-active').value === 'true',
+        notes: document.getElementById('jedit-notes').value.trim()
+    }
     if (jEditSeconds !== -2) {
         updates.expires = jEditSeconds === 0 ? 0 : Math.floor(Date.now() / 1000) + jEditSeconds
     }
-    const res=await fetch('/api/jmods_users',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify(updates)})
-    const data=await res.json()
-    const msgEl=document.getElementById('jedit-msg')
-    if(data.success){msgEl.className='msg msg-success';msgEl.textContent='✓ Cambios guardados';msgEl.style.display='block';fetchJmodsUsers();setTimeout(()=>closeJModal(),1500)}
-    else{msgEl.className='msg msg-error';msgEl.textContent='Error: '+(data.error||'desconocido');msgEl.style.display='block'}
+    const res = await fetch('/api/jmods_users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify(updates)
+    })
+    const data = await res.json()
+    if(data.success){
+        msgEl.className='msg msg-success'; msgEl.textContent='✓ Cambios guardados'; msgEl.style.display='block'
+        fetchJmodsUsers(); setTimeout(()=>closeJModal(),1500)
+    } else {
+        msgEl.className='msg msg-error'; msgEl.textContent='Error: '+(data.error||'desconocido'); msgEl.style.display='block'
+    }
 }
 async function toggleJmodsActive(id,active){await fetch('/api/jmods_users',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id,active})});fetchJmodsUsers()}
 async function deleteJmodsUser(id){if(!confirm('¿Borrar este usuario JMods permanentemente?'))return;await fetch('/api/jmods_users',{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id})});fetchJmodsUsers()}
