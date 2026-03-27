@@ -6,15 +6,24 @@ module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password')
     if (req.method === 'OPTIONS') return res.status(200).end()
 
+    // ── AUTH ────────────────────────────────────────────────────
     const authHeader = req.headers['x-admin-password']
     if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD)
         return res.status(403).json({ error: "No autorizado" })
 
+    // ── VALIDAR VARIABLES DE ENTORNO ANTES DE CREAR EL CLIENTE ──
+    if (!process.env.JMODS_SUPABASE_URL || !process.env.JMODS_SUPABASE_KEY) {
+        return res.status(500).json({
+            error: "Variables de entorno no configuradas: JMODS_SUPABASE_URL o JMODS_SUPABASE_KEY están vacías. Revisa tu panel de Vercel → Settings → Environment Variables."
+        })
+    }
+
+    // ── CREAR CLIENTE SUPABASE ──────────────────────────────────
     let supabase
     try {
         supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
     } catch (e) {
-        return res.status(500).json({ error: "Error al conectar con Supabase: " + e.message })
+        return res.status(500).json({ error: "Error al instanciar Supabase: " + e.message })
     }
 
     // ── GET: Listar todos los usuarios ──────────────────────────
@@ -24,7 +33,7 @@ module.exports = async function handler(req, res) {
             .select('*')
             .order('created_at', { ascending: false })
 
-        if (error) return res.status(500).json({ error: error.message })
+        if (error) return res.status(500).json({ error: "GET jmods_users: " + error.message })
 
         const normalized = (data || []).map(u => ({
             ...u,
@@ -38,7 +47,7 @@ module.exports = async function handler(req, res) {
 
     // ── POST: Crear nuevo usuario ───────────────────────────────
     if (req.method === "POST") {
-        const { username, user_id, hwid, hwids, role, notes, expires } = req.body
+        const { username, user_id, hwid, hwids, role, notes, expires } = req.body || {}
 
         // Validaciones básicas
         if (!username || !String(username).trim())
@@ -49,7 +58,7 @@ module.exports = async function handler(req, res) {
 
         const parsedUserId = parseInt(user_id)
         if (isNaN(parsedUserId) || parsedUserId <= 0)
-            return res.status(400).json({ error: "El 'user_id' debe ser un número válido" })
+            return res.status(400).json({ error: "El 'user_id' debe ser un número válido y mayor a 0" })
 
         // Construir array de hwids
         let finalHwids = []
@@ -66,26 +75,31 @@ module.exports = async function handler(req, res) {
         // Owners y admins necesitan HWID
         if (finalHwids.length === 0 && (finalRole === 'owner' || finalRole === 'admin')) {
             return res.status(400).json({
-                error: `Rol '${finalRole}' requiere al menos un HWID`
+                error: `El rol '${finalRole}' requiere al menos un HWID`
             })
         }
 
-        // Verificar duplicado — SIN .single() para que no crashee si no existe
-        const { data: existing, error: checkError } = await supabase
-            .from('jmods_users')
-            .select('id, username')
-            .eq('user_id', parsedUserId)
-            .limit(1)
-
-        if (checkError) {
-            return res.status(500).json({ error: "Error al verificar usuario: " + checkError.message })
+        // Verificar duplicado por user_id
+        let existing, checkError
+        try {
+            const result = await supabase
+                .from('jmods_users')
+                .select('id, username')
+                .eq('user_id', parsedUserId)
+                .limit(1)
+            existing  = result.data
+            checkError = result.error
+        } catch (e) {
+            return res.status(500).json({ error: "Error de red al verificar usuario: " + e.message + ". Verifica JMODS_SUPABASE_URL en Vercel." })
         }
 
-        if (existing && existing.length > 0) {
+        if (checkError)
+            return res.status(500).json({ error: "Error al verificar duplicado: " + checkError.message })
+
+        if (existing && existing.length > 0)
             return res.status(409).json({
                 error: `El user_id ${parsedUserId} ya está registrado como '${existing[0].username}'`
             })
-        }
 
         // Parsear expires
         let finalExpires = 0
@@ -94,7 +108,7 @@ module.exports = async function handler(req, res) {
             finalExpires = isNaN(parsed) ? 0 : parsed
         }
 
-        // Insertar en Supabase
+        // Insertar
         const { data, error } = await supabase
             .from('jmods_users')
             .insert([{
@@ -111,10 +125,10 @@ module.exports = async function handler(req, res) {
 
         if (error) {
             if (error.code === '23505')
-                return res.status(409).json({ error: "Este user_id ya existe en la base de datos" })
+                return res.status(409).json({ error: "Este user_id ya existe en la base de datos (constraint único)" })
             if (error.code === '23514')
                 return res.status(400).json({ error: "Rol inválido. Usa: owner, admin o follower" })
-            return res.status(500).json({ error: error.message })
+            return res.status(500).json({ error: "Error al insertar: " + error.message })
         }
 
         return res.status(201).json({ success: true, user: data[0] })
@@ -122,7 +136,7 @@ module.exports = async function handler(req, res) {
 
     // ── PATCH: Editar usuario ───────────────────────────────────
     if (req.method === "PATCH") {
-        const { id, username, hwid, hwids, role, active, notes, expires } = req.body
+        const { id, username, hwid, hwids, role, active, notes, expires } = req.body || {}
 
         if (!id)
             return res.status(400).json({ error: "El campo 'id' es obligatorio para editar" })
@@ -134,7 +148,7 @@ module.exports = async function handler(req, res) {
         if (notes    !== undefined) updates.notes    = String(notes || '').trim()
         if (expires  !== undefined) updates.expires  = parseInt(expires) || 0
 
-        // Manejo de hwids
+        // Manejo de hwids en edición
         if (hwids !== undefined && Array.isArray(hwids)) {
             const filtered = hwids.map(h => String(h || '').trim()).filter(h => h !== '')
             if (filtered.length > 0) {
@@ -154,14 +168,14 @@ module.exports = async function handler(req, res) {
             .update(updates)
             .eq('id', id)
 
-        if (error) return res.status(500).json({ error: error.message })
+        if (error) return res.status(500).json({ error: "Error al actualizar: " + error.message })
 
         return res.json({ success: true })
     }
 
     // ── DELETE: Eliminar usuario ────────────────────────────────
     if (req.method === "DELETE") {
-        const { id } = req.body
+        const { id } = req.body || {}
 
         if (!id)
             return res.status(400).json({ error: "El campo 'id' es obligatorio para eliminar" })
@@ -171,7 +185,7 @@ module.exports = async function handler(req, res) {
             .delete()
             .eq('id', id)
 
-        if (error) return res.status(500).json({ error: error.message })
+        if (error) return res.status(500).json({ error: "Error al eliminar: " + error.message })
 
         return res.json({ success: true })
     }
