@@ -10,9 +10,14 @@ module.exports = async function handler(req, res) {
     if (!authHeader || authHeader !== process.env.ADMIN_PASSWORD)
         return res.status(403).json({ error: "No autorizado" })
 
-    const supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
+    let supabase
+    try {
+        supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
+    } catch (e) {
+        return res.status(500).json({ error: "Error al conectar con Supabase: " + e.message })
+    }
 
-    // ── GET: Listar todos los usuarios ──
+    // ── GET: Listar todos los usuarios ──────────────────────────
     if (req.method === "GET") {
         const { data, error } = await supabase
             .from('jmods_users')
@@ -21,7 +26,6 @@ module.exports = async function handler(req, res) {
 
         if (error) return res.status(500).json({ error: error.message })
 
-        // Normalizar: si hwids está vacío pero hwid existe, usarlo
         const normalized = (data || []).map(u => ({
             ...u,
             hwids: (u.hwids && u.hwids.length > 0)
@@ -32,12 +36,12 @@ module.exports = async function handler(req, res) {
         return res.json({ users: normalized })
     }
 
-    // ── POST: Crear nuevo usuario ──
+    // ── POST: Crear nuevo usuario ───────────────────────────────
     if (req.method === "POST") {
         const { username, user_id, hwid, hwids, role, notes, expires } = req.body
 
-        // Validación de campos obligatorios
-        if (!username || !username.trim())
+        // Validaciones básicas
+        if (!username || !String(username).trim())
             return res.status(400).json({ error: "El campo 'username' es obligatorio" })
 
         if (!user_id)
@@ -47,36 +51,39 @@ module.exports = async function handler(req, res) {
         if (isNaN(parsedUserId) || parsedUserId <= 0)
             return res.status(400).json({ error: "El 'user_id' debe ser un número válido" })
 
-        // Construir array de hwids limpio
+        // Construir array de hwids
         let finalHwids = []
-
         if (hwids && Array.isArray(hwids) && hwids.length > 0) {
-            finalHwids = hwids.map(h => (h || '').trim()).filter(h => h !== '')
-        } else if (hwid && hwid.trim() !== '') {
-            finalHwids = [hwid.trim()]
+            finalHwids = hwids.map(h => String(h || '').trim()).filter(h => h !== '')
+        } else if (hwid && String(hwid).trim() !== '') {
+            finalHwids = [String(hwid).trim()]
         }
 
         // Validar rol
         const validRoles = ['owner', 'admin', 'follower']
         const finalRole = validRoles.includes(role) ? role : 'follower'
 
-        // Owners y admins NECESITAN HWID. Followers pueden entrar sin él.
+        // Owners y admins necesitan HWID
         if (finalHwids.length === 0 && (finalRole === 'owner' || finalRole === 'admin')) {
             return res.status(400).json({
-                error: `Los usuarios con rol '${finalRole}' requieren al menos un HWID`
+                error: `Rol '${finalRole}' requiere al menos un HWID`
             })
         }
 
-        // Verificar si el user_id ya existe
-        const { data: existing } = await supabase
+        // Verificar duplicado — SIN .single() para que no crashee si no existe
+        const { data: existing, error: checkError } = await supabase
             .from('jmods_users')
             .select('id, username')
             .eq('user_id', parsedUserId)
-            .single()
+            .limit(1)
 
-        if (existing) {
+        if (checkError) {
+            return res.status(500).json({ error: "Error al verificar usuario: " + checkError.message })
+        }
+
+        if (existing && existing.length > 0) {
             return res.status(409).json({
-                error: `El user_id ${parsedUserId} ya está registrado como '${existing.username}'`
+                error: `El user_id ${parsedUserId} ya está registrado como '${existing[0].username}'`
             })
         }
 
@@ -87,56 +94,56 @@ module.exports = async function handler(req, res) {
             finalExpires = isNaN(parsed) ? 0 : parsed
         }
 
-        // Insertar
+        // Insertar en Supabase
         const { data, error } = await supabase
             .from('jmods_users')
             .insert([{
-                username: username.trim(),
-                user_id: parsedUserId,
-                hwid: finalHwids[0] || '',        // campo legacy — primer HWID o vacío
-                hwids: finalHwids,                 // array completo
-                role: finalRole,
-                active: true,
-                notes: (notes || '').trim(),
-                expires: finalExpires
+                username: String(username).trim(),
+                user_id:  parsedUserId,
+                hwid:     finalHwids[0] || '',
+                hwids:    finalHwids,
+                role:     finalRole,
+                active:   true,
+                notes:    String(notes || '').trim(),
+                expires:  finalExpires
             }])
             .select()
 
         if (error) {
-            // Manejo específico de errores de Supabase
-            if (error.code === '23505') {
-                return res.status(409).json({ error: "Este usuario ya existe (conflicto de clave única)" })
-            }
+            if (error.code === '23505')
+                return res.status(409).json({ error: "Este user_id ya existe en la base de datos" })
+            if (error.code === '23514')
+                return res.status(400).json({ error: "Rol inválido. Usa: owner, admin o follower" })
             return res.status(500).json({ error: error.message })
         }
 
         return res.status(201).json({ success: true, user: data[0] })
     }
 
-    // ── PATCH: Editar usuario existente ──
+    // ── PATCH: Editar usuario ───────────────────────────────────
     if (req.method === "PATCH") {
         const { id, username, hwid, hwids, role, active, notes, expires } = req.body
 
-        if (!id) return res.status(400).json({ error: "El campo 'id' es obligatorio para editar" })
+        if (!id)
+            return res.status(400).json({ error: "El campo 'id' es obligatorio para editar" })
 
         const updates = {}
+        if (username !== undefined) updates.username = String(username).trim()
+        if (role     !== undefined) updates.role     = role
+        if (active   !== undefined) updates.active   = active
+        if (notes    !== undefined) updates.notes    = String(notes || '').trim()
+        if (expires  !== undefined) updates.expires  = parseInt(expires) || 0
 
-        if (username  !== undefined) updates.username = username.trim()
-        if (role      !== undefined) updates.role     = role
-        if (active    !== undefined) updates.active   = active
-        if (notes     !== undefined) updates.notes    = (notes || '').trim()
-        if (expires   !== undefined) updates.expires  = parseInt(expires) || 0
-
-        // Manejo de hwids en edición
+        // Manejo de hwids
         if (hwids !== undefined && Array.isArray(hwids)) {
-            const filtered = hwids.map(h => (h || '').trim()).filter(h => h !== '')
+            const filtered = hwids.map(h => String(h || '').trim()).filter(h => h !== '')
             if (filtered.length > 0) {
                 updates.hwids = filtered
-                updates.hwid  = filtered[0]    // mantener campo legacy sincronizado
+                updates.hwid  = filtered[0]
             }
-        } else if (hwid !== undefined && hwid.trim() !== '') {
-            updates.hwid  = hwid.trim()
-            updates.hwids = [hwid.trim()]
+        } else if (hwid !== undefined && String(hwid).trim() !== '') {
+            updates.hwid  = String(hwid).trim()
+            updates.hwids = [String(hwid).trim()]
         }
 
         if (Object.keys(updates).length === 0)
@@ -152,11 +159,12 @@ module.exports = async function handler(req, res) {
         return res.json({ success: true })
     }
 
-    // ── DELETE: Eliminar usuario ──
+    // ── DELETE: Eliminar usuario ────────────────────────────────
     if (req.method === "DELETE") {
         const { id } = req.body
 
-        if (!id) return res.status(400).json({ error: "El campo 'id' es obligatorio para eliminar" })
+        if (!id)
+            return res.status(400).json({ error: "El campo 'id' es obligatorio para eliminar" })
 
         const { error } = await supabase
             .from('jmods_users')
