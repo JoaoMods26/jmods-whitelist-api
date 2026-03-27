@@ -43,25 +43,30 @@ module.exports = async function handler(req, res) {
         return res.json({ players: data })
     }
 
-    // ── SEND TRIGGER ──
-    if (action === 'send_trigger') {
-        const { server_id } = req.body
+    // ── MARCAR SERVIDOR ACTIVO ──
+    if (action === 'set_active_server') {
+        const { server_id, place_id, owner_id } = req.body
         const { error } = await supabase
-            .from('jmods_triggers')
-            .insert([{ server_id }])
+            .from('jmods_active_servers')
+            .upsert({
+                server_id,
+                place_id: parseInt(place_id) || 0,
+                owner_id: parseInt(owner_id),
+                last_active: new Date().toISOString()
+            }, { onConflict: 'server_id' })
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── GET TRIGGER ──
-    if (action === 'get_trigger') {
+    // ── VERIFICAR SI MI SERVIDOR ESTÁ ACTIVO ──
+    if (action === 'is_server_active') {
         const { server_id } = req.body
-        const cutoff = new Date(Date.now() - 20000).toISOString()
+        const cutoff = new Date(Date.now() - 90000).toISOString()
         const { data, error } = await supabase
-            .from('jmods_triggers')
-            .select('id')
+            .from('jmods_active_servers')
+            .select('server_id')
             .eq('server_id', server_id)
-            .gte('created_at', cutoff)
+            .gte('last_active', cutoff)
             .limit(1)
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ active: data && data.length > 0 })
@@ -99,7 +104,6 @@ module.exports = async function handler(req, res) {
         if (error) return res.status(500).json({ error: error.message })
         if (!data || data.length === 0) return res.json({ commands: [] })
 
-        // Validar que el sender sea owner o admin en la DB
         const senderIds = [...new Set(data.map(c => c.sender_id))]
         const { data: validSenders } = await supabase
             .from('jmods_users')
