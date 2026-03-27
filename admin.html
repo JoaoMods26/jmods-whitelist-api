@@ -129,6 +129,9 @@
   .role-btn.selected-admin    { background: #1a2a3a; color: #7eb8f7; border-color: #2a4a6a; }
   .role-btn.selected-follower { background: #1a2a1a; color: #6ee7b7; border-color: #2a4a2a; }
   .role-desc-box { background: #0f0f0f; border-radius: 6px; padding: 8px 12px; font-size: 11px; color: #555; margin-top: 6px; min-height: 32px; }
+  /* Banner de diagnóstico */
+  .diag-banner { background: #1a1000; border: 1px solid #5a3a00; border-radius: 8px; padding: 10px 14px; margin-bottom: 1rem; font-size: 12px; color: #c08030; display: none; }
+  .diag-banner strong { color: #f0a030; }
 </style>
 </head>
 <body>
@@ -153,6 +156,11 @@
       <button class="btn btn-neutral" onclick="refreshAll()">↻ Refrescar</button>
       <button class="btn btn-danger" onclick="logout()">Salir</button>
     </div>
+  </div>
+
+  <!-- Banner de error de configuración -->
+  <div class="diag-banner" id="diag-banner">
+    <strong>⚠️ Error de configuración detectado:</strong> <span id="diag-msg"></span>
   </div>
 
   <div class="page-tabs">
@@ -531,14 +539,11 @@
 
 <script>
 // ══════════════════════════════════════════
-// ✅ URL BASE DE LA API — ÚNICO LUGAR PARA CAMBIARLA
+// URL BASE DE LA API — ÚNICO LUGAR PARA CAMBIARLA
 // ══════════════════════════════════════════
 const API_BASE = 'https://jmods-whitelist-api-navy.vercel.app'
 
-// Helper: construye URL completa para cualquier endpoint
-function apiUrl(path) {
-  return API_BASE + path
-}
+function apiUrl(path) { return API_BASE + path }
 
 // ══════════════════════════════════════════
 // STATE
@@ -550,6 +555,16 @@ let addSeconds = 0
 let editSeconds = -2
 let jAddSeconds = 0
 let jEditSeconds = -2
+
+// ══════════════════════════════════════════
+// DIAGNÓSTICO — muestra banner si hay error de config
+// ══════════════════════════════════════════
+function showDiag(msg) {
+    const b = document.getElementById('diag-banner')
+    const m = document.getElementById('diag-msg')
+    if (msg) { m.textContent = msg; b.style.display = 'block' }
+    else { b.style.display = 'none' }
+}
 
 // ══════════════════════════════════════════
 // HWID HELPERS
@@ -577,8 +592,7 @@ function addHwidField(ctx, value = '') {
 function removeHwidField(btn, ctx) {
     const list = document.getElementById(ctx + '-hwid-list')
     if (list.querySelectorAll('.hwid-entry').length <= 1) {
-        const input = btn.closest('.hwid-entry').querySelector('input')
-        if (input) input.value = ''
+        btn.closest('.hwid-entry').querySelector('input').value = ''
         return
     }
     btn.closest('.hwid-entry').remove()
@@ -605,8 +619,8 @@ function clearHwidList(ctx) {
 }
 function populateHwidList(ctx, hwids) {
     clearHwidList(ctx)
-    if (!hwids || hwids.length === 0) { addHwidField(ctx, '') }
-    else { hwids.forEach(h => addHwidField(ctx, h)) }
+    if (!hwids || hwids.length === 0) addHwidField(ctx, '')
+    else hwids.forEach(h => addHwidField(ctx, h))
 }
 
 // ══════════════════════════════════════════
@@ -661,20 +675,20 @@ function selectPreset(ctx, btn, seconds) {
     const custom  = document.getElementById(ctx + '-custom-date')
     if (ctx === 'add') addSeconds = seconds; else editSeconds = seconds
     if (seconds === -2) {
-        if(custom) custom.style.display='none'
-        label.textContent='🔒 Sin cambios'; preview.innerHTML='Sin cambios en la duración actual'; preview.style.color='#666'
+        if (custom) custom.style.display = 'none'
+        label.textContent = '🔒 Sin cambios'; preview.innerHTML = 'Sin cambios en la duración actual'; preview.style.color = '#666'
     } else if (seconds === -1) {
-        if(custom) custom.style.display='block'
-        label.textContent='📅 Fecha exacta'; preview.textContent='Selecciona una fecha'; preview.style.color='#666'
+        if (custom) custom.style.display = 'block'
+        label.textContent = '📅 Fecha exacta'; preview.textContent = 'Selecciona una fecha'; preview.style.color = '#666'
     } else if (seconds === 0) {
-        if(custom) custom.style.display='none'
-        label.textContent='♾️ Permanente'; preview.innerHTML='♾️ Sin fecha de expiración — acceso permanente'; preview.style.color='#40c070'
+        if (custom) custom.style.display = 'none'
+        label.textContent = '♾️ Permanente'; preview.innerHTML = '♾️ Sin fecha de expiración — acceso permanente'; preview.style.color = '#40c070'
     } else {
-        if(custom) custom.style.display='none'
+        if (custom) custom.style.display = 'none'
         const exp = new Date(Date.now() + seconds * 1000)
         const str = exp.toLocaleString('es',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
         label.textContent = btn.textContent
-        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color='#666'
+        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color = '#666'
     }
     document.getElementById(ctx+'-dd').querySelector('.duration-trigger').classList.remove('open')
     document.getElementById(ctx+'-dd-panel').classList.remove('open')
@@ -696,12 +710,12 @@ function selectJPreset(btn, seconds) {
     const label = document.getElementById('jadd-duration-label')
     const preview = document.getElementById('jadd-expires-preview')
     if (seconds === 0) {
-        label.textContent='♾️ Permanente'; preview.innerHTML='♾️ Sin fecha de expiración — acceso permanente'; preview.style.color='#40c070'
+        label.textContent = '♾️ Permanente'; preview.innerHTML = '♾️ Sin fecha de expiración — acceso permanente'; preview.style.color = '#40c070'
     } else {
         const exp = new Date(Date.now() + seconds * 1000)
         const str = exp.toLocaleString('es',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
         label.textContent = btn.textContent
-        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color='#666'
+        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color = '#666'
     }
     document.getElementById('jadd-dd').querySelector('.duration-trigger').classList.remove('open')
     document.getElementById('jadd-dd-panel').classList.remove('open')
@@ -713,14 +727,14 @@ function selectJEditPreset(btn, seconds) {
     const label = document.getElementById('jedit-duration-label')
     const preview = document.getElementById('jedit-expires-preview')
     if (seconds === -2) {
-        label.textContent='🔒 Sin cambios'; preview.innerHTML='Sin cambios en la duración actual'; preview.style.color='#666'
+        label.textContent = '🔒 Sin cambios'; preview.innerHTML = 'Sin cambios en la duración actual'; preview.style.color = '#666'
     } else if (seconds === 0) {
-        label.textContent='♾️ Permanente'; preview.innerHTML='♾️ Sin fecha de expiración — acceso permanente'; preview.style.color='#40c070'
+        label.textContent = '♾️ Permanente'; preview.innerHTML = '♾️ Sin fecha de expiración — acceso permanente'; preview.style.color = '#40c070'
     } else {
         const exp = new Date(Date.now() + seconds * 1000)
         const str = exp.toLocaleString('es',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
         label.textContent = btn.textContent
-        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color='#666'
+        preview.innerHTML = `📅 Expira: <strong style="color:#7eb8f7">${str}</strong>`; preview.style.color = '#666'
     }
     document.getElementById('jedit-dd').querySelector('.duration-trigger').classList.remove('open')
     document.getElementById('jedit-dd-panel').classList.remove('open')
@@ -749,12 +763,13 @@ function logout() {
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('panel').style.display = 'none'
     document.getElementById('password-input').value = ''
+    showDiag(null)
 }
 document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') login() })
 function refreshAll() { fetchUsers(); fetchJmodsUsers() }
 
 // ══════════════════════════════════════════
-// WHITELIST API  — ✅ usa apiUrl()
+// WHITELIST API
 // ══════════════════════════════════════════
 function autoFillPlaceId(ctx) {
     const sel = document.getElementById(ctx === 'new' ? 'new-script' : 'edit-script')
@@ -766,6 +781,8 @@ async function fetchUsers() {
         const res = await fetch(apiUrl('/api/admin'), { headers: { 'x-admin-password': adminPassword } })
         if (res.status === 403) return false
         const data = await res.json()
+        if (data.error) { showDiag(data.error); return true }
+        showDiag(null)
         users = data.users || []
         renderTable(users); updateStats()
         return true
@@ -876,13 +893,20 @@ async function toggleBan(id,banned){await fetch(apiUrl('/api/admin'),{method:'PA
 async function deleteUser(id){if(!confirm('¿Borrar este usuario?'))return;await fetch(apiUrl('/api/admin'),{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-password':adminPassword},body:JSON.stringify({id})});fetchUsers()}
 
 // ══════════════════════════════════════════
-// JMODS USERS API  — ✅ usa apiUrl()
+// JMODS USERS API
 // ══════════════════════════════════════════
 async function fetchJmodsUsers() {
     try {
         const res = await fetch(apiUrl('/api/jmods_users'), { headers: { 'x-admin-password': adminPassword } })
         if (res.status === 403) return false
         const data = await res.json()
+        // FIX: detectar error de configuración y mostrarlo en el banner
+        if (data.error) {
+            showDiag(data.error)
+            document.getElementById('jmods-table-container').innerHTML = `<div class="empty" style="color:#f07070;">⚠️ ${data.error}</div>`
+            return false
+        }
+        showDiag(null)
         jmodsUsers = data.users || []
         renderJmodsTable(jmodsUsers); updateJmodsStats()
         return true
