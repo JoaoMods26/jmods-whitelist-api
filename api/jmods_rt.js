@@ -6,61 +6,87 @@ module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-token')
     if (req.method === 'OPTIONS') return res.status(200).end()
 
+    // ── AUTH ────────────────────────────────────────────────────
     const token = req.headers['x-api-token']
     if (!token || token !== process.env.API_TOKEN)
         return res.status(403).json({ error: "Token inválido" })
 
+    // ── VALIDAR VARIABLES DE ENTORNO ────────────────────────────
+    if (!process.env.JMODS_SUPABASE_URL || !process.env.JMODS_SUPABASE_KEY) {
+        return res.status(500).json({
+            error: "Variables de entorno no configuradas: JMODS_SUPABASE_URL o JMODS_SUPABASE_KEY. Revisa Vercel → Settings → Environment Variables."
+        })
+    }
+
     const supabase = createClient(process.env.JMODS_SUPABASE_URL, process.env.JMODS_SUPABASE_KEY)
     const { action } = req.body || req.query
 
-    // ── HEARTBEAT ──
+    if (!action)
+        return res.status(400).json({ error: "El campo 'action' es requerido" })
+
+    // ── HEARTBEAT ──────────────────────────────────────────────
     if (action === 'heartbeat') {
         const { user_id, username, role, server_id, place_id } = req.body
+        if (!user_id || !server_id)
+            return res.status(400).json({ error: "heartbeat requiere user_id y server_id" })
+
         const { error } = await supabase
             .from('jmods_heartbeats')
             .upsert({
-                user_id: parseInt(user_id),
+                user_id:   parseInt(user_id),
                 username,
                 role,
                 server_id,
-                place_id: parseInt(place_id) || 0,
+                place_id:  parseInt(place_id) || 0,
                 last_seen: new Date().toISOString()
             }, { onConflict: 'user_id,server_id' })
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── GET HEARTBEATS ──
+    // ── GET HEARTBEATS ─────────────────────────────────────────
     if (action === 'get_heartbeats') {
         const { server_id } = req.body
+        if (!server_id)
+            return res.status(400).json({ error: "get_heartbeats requiere server_id" })
+
         const cutoff = new Date(Date.now() - 30000).toISOString()
         const { data, error } = await supabase
             .from('jmods_heartbeats')
             .select('*')
             .eq('server_id', server_id)
             .gte('last_seen', cutoff)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ players: data })
     }
 
-    // ── MARCAR SERVIDOR ACTIVO ──
+    // ── MARCAR SERVIDOR ACTIVO ─────────────────────────────────
     if (action === 'set_active_server') {
         const { server_id, place_id, owner_id } = req.body
+        if (!server_id)
+            return res.status(400).json({ error: "set_active_server requiere server_id" })
+
         const { error } = await supabase
             .from('jmods_active_servers')
             .upsert({
                 server_id,
-                place_id: parseInt(place_id) || 0,
-                owner_id: parseInt(owner_id),
+                place_id:    parseInt(place_id) || 0,
+                owner_id:    parseInt(owner_id) || 0,
                 last_active: new Date().toISOString()
             }, { onConflict: 'server_id' })
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── VERIFICAR SI MI SERVIDOR ESTÁ ACTIVO ──
+    // ── VERIFICAR SI MI SERVIDOR ESTÁ ACTIVO ───────────────────
     if (action === 'is_server_active') {
         const { server_id } = req.body
+        if (!server_id)
+            return res.status(400).json({ error: "is_server_active requiere server_id" })
+
         const cutoff = new Date(Date.now() - 90000).toISOString()
         const { data, error } = await supabase
             .from('jmods_active_servers')
@@ -68,31 +94,39 @@ module.exports = async function handler(req, res) {
             .eq('server_id', server_id)
             .gte('last_active', cutoff)
             .limit(1)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ active: data && data.length > 0 })
     }
 
-    // ── ENVIAR COMANDO ──
+    // ── ENVIAR COMANDO ─────────────────────────────────────────
     if (action === 'send_command') {
         const { sender_id, sender_role, server_id, command, target } = req.body
+        if (!sender_id || !server_id || !command)
+            return res.status(400).json({ error: "send_command requiere sender_id, server_id y command" })
+
         const { data, error } = await supabase
             .from('jmods_commands')
             .insert([{
-                sender_id: parseInt(sender_id),
-                sender_role,
+                sender_id:   parseInt(sender_id),
+                sender_role: sender_role || null,
                 server_id,
                 command,
-                target: target || null,
-                executed: false
+                target:      target || null,
+                executed:    false
             }])
             .select()
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true, id: data[0].id })
     }
 
-    // ── LEER COMANDOS PENDIENTES ──
+    // ── LEER COMANDOS PENDIENTES ───────────────────────────────
     if (action === 'get_commands') {
         const { server_id } = req.body
+        if (!server_id)
+            return res.status(400).json({ error: "get_commands requiere server_id" })
+
         const cutoff = new Date(Date.now() - 20000).toISOString()
         const { data, error } = await supabase
             .from('jmods_commands')
@@ -101,9 +135,11 @@ module.exports = async function handler(req, res) {
             .eq('executed', false)
             .gte('created_at', cutoff)
             .order('created_at', { ascending: true })
+
         if (error) return res.status(500).json({ error: error.message })
         if (!data || data.length === 0) return res.json({ commands: [] })
 
+        // Solo aceptar comandos de senders que sean owner/admin activos
         const senderIds = [...new Set(data.map(c => c.sender_id))]
         const { data: validSenders } = await supabase
             .from('jmods_users')
@@ -117,21 +153,26 @@ module.exports = async function handler(req, res) {
         return res.json({ commands: filtered })
     }
 
-    // ── ACK COMANDOS ──
+    // ── ACK COMANDOS ───────────────────────────────────────────
     if (action === 'ack_commands') {
         const { ids } = req.body
         if (!ids || ids.length === 0) return res.json({ success: true })
+
         const { error } = await supabase
             .from('jmods_commands')
             .update({ executed: true })
             .in('id', ids)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── ENVIAR EJECUCIÓN ──
+    // ── ENVIAR EJECUCIÓN ───────────────────────────────────────
     if (action === 'send_execution') {
         const { sender_id, server_id, target, code } = req.body
+        if (!sender_id || !target || !code)
+            return res.status(400).json({ error: "send_execution requiere sender_id, target y code" })
+
         const { data, error } = await supabase
             .from('jmods_executions')
             .insert([{
@@ -139,62 +180,74 @@ module.exports = async function handler(req, res) {
                 server_id: server_id || null,
                 target,
                 code,
-                executed: false
+                executed:  false
             }])
             .select()
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true, id: data[0].id })
     }
 
-    // ── LEER EJECUCIONES PENDIENTES ──
+    // ── LEER EJECUCIONES PENDIENTES ────────────────────────────
     if (action === 'get_executions') {
         const { user_id, username, server_id } = req.body
         const cutoff = new Date(Date.now() - 20000).toISOString()
+
         const { data, error } = await supabase
             .from('jmods_executions')
             .select('*')
             .eq('executed', false)
             .gte('created_at', cutoff)
+
         if (error) return res.status(500).json({ error: error.message })
 
-        const filtered = (data || []).filter(e => {
-            return e.target === '.all' ||
-                   (e.target === '.s' && e.server_id === server_id) ||
-                   e.target === username
-        })
+        const filtered = (data || []).filter(e =>
+            e.target === '.all' ||
+            (e.target === '.s' && e.server_id === server_id) ||
+            e.target === username
+        )
         return res.json({ executions: filtered })
     }
 
-    // ── ACK EJECUCIONES ──
+    // ── ACK EJECUCIONES ────────────────────────────────────────
     if (action === 'ack_executions') {
         const { ids } = req.body
         if (!ids || ids.length === 0) return res.json({ success: true })
+
         const { error } = await supabase
             .from('jmods_executions')
             .update({ executed: true })
             .in('id', ids)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── ENVIAR BRING ──
+    // ── ENVIAR BRING ───────────────────────────────────────────
     if (action === 'send_bring') {
         const { sender_id, server_id, target_user_id } = req.body
+        if (!sender_id || !server_id || !target_user_id)
+            return res.status(400).json({ error: "send_bring requiere sender_id, server_id y target_user_id" })
+
         const { error } = await supabase
             .from('jmods_brings')
             .insert([{
-                sender_id: parseInt(sender_id),
+                sender_id:      parseInt(sender_id),
                 server_id,
                 target_user_id: parseInt(target_user_id),
-                executed: false
+                executed:       false
             }])
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── LEER BRINGS PENDIENTES ──
+    // ── LEER BRINGS PENDIENTES ─────────────────────────────────
     if (action === 'get_brings') {
         const { user_id, server_id } = req.body
+        if (!user_id || !server_id)
+            return res.status(400).json({ error: "get_brings requiere user_id y server_id" })
+
         const cutoff = new Date(Date.now() - 20000).toISOString()
         const { data, error } = await supabase
             .from('jmods_brings')
@@ -203,51 +256,72 @@ module.exports = async function handler(req, res) {
             .eq('target_user_id', parseInt(user_id))
             .eq('executed', false)
             .gte('created_at', cutoff)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ brings: data })
     }
 
-    // ── ACK BRINGS ──
+    // ── ACK BRINGS ─────────────────────────────────────────────
     if (action === 'ack_brings') {
         const { ids } = req.body
         if (!ids || ids.length === 0) return res.json({ success: true })
+
         const { error } = await supabase
             .from('jmods_brings')
             .update({ executed: true })
             .in('id', ids)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ success: true })
     }
 
-    // ── VERIFICAR USUARIO ──
+    // ── VERIFICAR USUARIO ──────────────────────────────────────
+    // FIX: ahora verifica contra el array hwids además del campo hwid legacy
     if (action === 'verify_user') {
         const { user_id, hwid } = req.body
+        if (!user_id || !hwid)
+            return res.json({ verified: false, reason: "Faltan user_id o hwid" })
+
         const { data, error } = await supabase
             .from('jmods_users')
             .select('*')
             .eq('user_id', parseInt(user_id))
             .eq('active', true)
             .single()
+
         if (error || !data)
-            return res.json({ verified: false, reason: "No autorizado" })
-        if (data.hwid !== hwid)
+            return res.json({ verified: false, reason: "Usuario no encontrado o inactivo" })
+
+        // Verificar HWID contra el array hwids (multi-dispositivo) y el campo legacy hwid
+        const registeredHwids = (data.hwids && data.hwids.length > 0)
+            ? data.hwids
+            : (data.hwid ? [data.hwid] : [])
+
+        if (!registeredHwids.includes(hwid))
             return res.json({ verified: false, reason: "HWID no coincide" })
+
+        // Verificar expiración
         if (data.expires !== 0 && Date.now() / 1000 > data.expires) {
-            await supabase.from('jmods_users').update({ active: false }).eq('id', data.id)
+            await supabase
+                .from('jmods_users')
+                .update({ active: false })
+                .eq('id', data.id)
             return res.json({ verified: false, reason: "Acceso expirado" })
         }
+
         return res.json({ verified: true, role: data.role, username: data.username })
     }
 
-    // ── GET ALL ROLES ──
+    // ── GET ALL ROLES ──────────────────────────────────────────
     if (action === 'get_all_roles') {
         const { data, error } = await supabase
             .from('jmods_users')
             .select('user_id, role, active')
             .eq('active', true)
+
         if (error) return res.status(500).json({ error: error.message })
         return res.json({ users: data })
     }
 
-    return res.status(400).json({ error: "Accion no reconocida: " + action })
+    return res.status(400).json({ error: "Acción no reconocida: " + action })
 }
